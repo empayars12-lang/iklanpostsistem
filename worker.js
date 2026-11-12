@@ -1,4 +1,3 @@
-// Cloudflare Worker: Gemini 1.5 Flash (Dikemaskini untuk format API Key AQ.)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -20,62 +19,64 @@ export default {
 
     try {
       const body = await request.json();
-      
-      // Kunci API Google AI Studio anda
-      const GEMINI_API_KEY = "AQ.Ab8RN6IyKwymarosg2M7U5acW55OdP7_v7MtHaUj0oUnHqTI8w";
 
-      const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
-Servis: ${body.service || 'Cetak Baju'}
-Masalah Pelanggan: ${body.problem || 'Mahu buat baju custom'}
-${body.product ? `Produk: ${body.product}` : ''}
+      // Ambil API Key secara selamat daripada Environment Variable Cloudflare
+      const GEMINI_API_KEY = env.GEMINI_API_KEY;
 
-Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju.`;
-
-      let contents = [];
-
-      if (body.image) {
-        const base64Data = body.image.split(',')[1] || body.image;
-        contents = [
-          {
-            parts: [
-              { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (seperti warna atau jenis cetakan) ke dalam ayat iklan." },
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: base64Data
-                }
-              }
-            ]
-          }
-        ];
-      } else {
-        contents = [
-          {
-            parts: [{ text: promptText }]
-          }
-        ];
+      if (!GEMINI_API_KEY) {
+        throw new Error("GEMINI_API_KEY tidak dijumpai dalam pembolehubah Cloudflare.");
       }
 
-      // 1. URL tanpa parameter ?key= lagi
-      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+      const service = body.service || "Cetak Baju";
+      const problem = body.problem || "Mahu buat baju custom";
+      const product = body.product || "";
 
-      // 2. Hantar API Key melalui Header x-goog-api-key
-      const response = await fetch(geminiUrl, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "x-goog-api-key": GEMINI_API_KEY 
-        },
-        body: JSON.stringify({ contents })
-      });
+      const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
+
+Servis: ${service}
+Masalah Pelanggan: ${problem}
+${product ? `Produk: ${product}` : ""}
+
+Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju. Guna bahasa Melayu yang santai dan persuasif.`;
+
+      let contents = [{ parts: [{ text: promptText }] }];
+
+      if (body.image) {
+        const base64Data = body.image.split(",")[1] || body.image;
+        contents = [{
+          parts: [
+            { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (warna, design, dll) ke dalam ayat iklan." },
+            {
+              inline_data: {
+                mime_type: "image/jpeg",
+                data: base64Data
+              }
+            }
+          ]
+        }];
+      }
+
+      const model = "gemini-1.5-flash";
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": GEMINI_API_KEY
+          },
+          body: JSON.stringify({ contents })
+        }
+      );
 
       const data = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error.message || "Ralat Gemini API");
+      if (!response.ok || data.error) {
+        throw new Error(data.error?.message || `Gemini error ${response.status}`);
       }
 
-      const waText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sila cuba lagi";
+      const waText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Sila cuba lagi";
 
       return new Response(JSON.stringify({ wa: waText }), {
         headers: { "Content-Type": "application/json", ...cors }
