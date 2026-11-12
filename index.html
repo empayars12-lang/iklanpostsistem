@@ -59,7 +59,7 @@ h2{font-size:18px;margin:4px 0 10px}h3{font-size:15px;margin:6px 0}
 .post img.th{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin:4px 0}
 .acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
 .acts .btn{padding:0 6px;font-size:13px}
-.mini{display:flex;justify-content:space-around;margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+.mini{display:flex;justify-around;margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
 .mini button{padding:8px 10px;font-size:13px;color:var(--mut);font-weight:600}.mini .d{color:var(--red)}
 .empty{text-align:center;padding:26px 14px;color:var(--mut);border:2px dashed var(--line);border-radius:18px;margin-bottom:12px;background:#fff}
 .check{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px}.check:last-child{border:0}.check.d span{text-decoration:line-through;color:#94a3b8}
@@ -82,7 +82,7 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
 .ov{position:fixed;inset:0;z-index:50;background:#0f172a99;display:none;align-items:flex-end;justify-content:center}.ov.show{display:flex}
 .sheet{background:#fff;width:100%;max-width:680px;max-height:94vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:6px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(40px);opacity:.4}}
-.sheet .grab{width:42px;height:5px;border-radius:9px;background:#cbd5e1;margin:6px auto 10px}
+.sheet .grab{width:42px;height:5px;border-radius:99px;background:#cbd5e1;margin:6px auto 10px}
 .sheet .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .sticky{position:sticky;bottom:-20px;background:#fff;padding:12px 0 4px;display:flex;gap:8px;margin-top:14px}
 #toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:90%;text-align:center}
@@ -155,8 +155,8 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
     <div class="sw"><span>Sertakan link WhatsApp</span><input type="checkbox" id="ai-wa" checked></div>
     <div class="sw" style="padding-top:0"><span>Sertakan hashtag</span><input type="checkbox" id="ai-tags" checked></div>
 
-    <button class="btn pri blk" id="btn-ai" data-act="aiwrite" style="margin-bottom:8px">📷 Tulis dengan AI dari gambar</button>
-    <p class="muted" style="margin:0 2px 10px">AI melihat gambar di langkah 5 dan menulis ayat ajakan beli. Perlu internet.</p>
+    <button class="btn pri blk" id="btn-ai" data-act="aiwrite" style="margin-bottom:8px">🤖 Tulis Iklan dengan Cloudflare AI</button>
+    <p class="muted" style="margin:0 2px 10px">AI percuma Cloudflare akan menjana ayat iklan berdasarkan servis & masalah pilihan anda.</p>
     <button class="btn grn blk" data-act="gen">✨ Jana Ayat Iklan (templat, percuma)</button>
   </div>
 
@@ -193,11 +193,11 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
     <button class="btn grn blk" style="margin-top:12px" data-act="savesettings">Simpan Tetapan</button>
   </div>
   <div class="card">
-    <h2 style="margin-top:0">🤖 AI dari gambar</h2>
-    <p class="muted" style="margin-top:0">Isi sekali sahaja. Alamat dan kata laluan diberi oleh pemilik (lihat panduan pemasangan Worker).</p>
+    <h2 style="margin-top:0">🤖 Cloudflare AI Worker</h2>
+    <p class="muted" style="margin-top:0">Diset secara automatik ke Worker percuma Cloudflare anda.</p>
     <label class="f" style="margin-top:0">Alamat AI (URL Worker)</label>
-    <input id="st-ai-url" type="url" placeholder="https://esk-ai.namaanda.workers.dev">
-    <label class="f">Kata laluan app</label>
+    <input id="st-ai-url" type="url" placeholder="https://dawn-shadow-826c.empayars12.workers.dev">
+    <label class="f">Kata laluan app (pilihan)</label>
     <input id="st-ai-key" type="password" autocomplete="off">
   </div>
   <div class="card">
@@ -306,7 +306,7 @@ async function shareText(text,img){
 function compress(file,max=900,q=.72){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height));const c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};i.onerror=rej;i.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
 
 /* ---------- Data ---------- */
-const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false,aiUrl:'',aiKey:''};
+const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false,aiUrl:'https://dawn-shadow-826c.empayars12.workers.dev',aiKey:''};
 const DEF_CHECK=[
  {id:1,text:'Sediakan blok & dakwat cetak DTF / Silk Screen',done:false},
  {id:2,text:'Semak jadual post pagi, tengah hari & malam',done:false},
@@ -532,30 +532,27 @@ function gen(bump){
 function autosize(el){el.style.height='auto';el.style.height=Math.max(el.scrollHeight+4,el.id==='o-main'?260:70)+'px'}
 function countMain(){$('#o-count').textContent=`${$('#o-main').value.length} aksara`}
 
-/* ---------- AI dari gambar ---------- */
-const TONE_NAME={kel:'kelantan',std:'santai',for:'formal'};
+/* ---------- AI dari Cloudflare Worker Percuma ---------- */
 async function aiWrite(btn){
-  if(!settings.aiUrl)return toast('Isi alamat AI di Tetapan dahulu');
-  if(!ai.img)return toast('Muat naik gambar dahulu (langkah 5)');
+  const url=settings.aiUrl||'https://dawn-shadow-826c.empayars12.workers.dev';
   if(!navigator.onLine)return toast('Tiada internet. Guna butang templat');
   const old=btn.textContent;btn.disabled=true;btn.textContent='⏳ AI sedang menulis...';
-  const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),45000);
+  const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),30000);
   try{
-    const r=await fetch(settings.aiUrl,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','X-App-Key':settings.aiKey||''},
-      body:JSON.stringify({image:ai.img,service:SERVICES.find(x=>x.id===ai.service).name,problem:PROBLEMS[ai.problem].l,tone:TONE_NAME[ai.tone],
-        product:$('#ai-prod').value.trim(),time:$('#ai-time').value.trim(),offer:$('#ai-offer').value.trim(),urgency:URG[$('#ai-urg').value]})});
+    const r=await fetch(url,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','X-App-Key':settings.aiKey||''},
+      body:JSON.stringify({service:SERVICES.find(x=>x.id===ai.service).name,problem:PROBLEMS[ai.problem].l})});
     const d=await r.json().catch(()=>({}));
     if(!r.ok||d.error)throw new Error(d.error||('ralat '+r.status));
     const useWa=$('#ai-wa').checked,wa=useWa?waBlock():'',tags=$('#ai-tags').checked?settings.hashtags:'';
     const J=a=>a.filter(Boolean).join('\n\n');
     $('#o-wa').value=J([d.wa,wa]);
-    $('#o-reel').value=J([d.reel,useWa?`💬 WhatsApp: wasap.my/${settings.waPhone.replace(/\D/g,'')}`:'',tags]);
-    $('#o-vid').value=d.video||'';
-    $('#o-main').value=J([d.main,wa,tags]);
+    $('#o-reel').value=J([d.wa,useWa?`💬 WhatsApp: wasap.my/${settings.waPhone.replace(/\D/g,'')}`:'',tags]);
+    $('#o-vid').value=`🎬 IDEA VIDEO 15 SAAT\n\n0–3s: Tunjuk produk.\n3–10s: ${d.wa}\n10–15s: Mesej WhatsApp kami.`;
+    $('#o-main').value=J([d.wa,wa,tags]);
     $('#ai-results').classList.remove('hidden');
     $$('#ai-results textarea').forEach(autosize);countMain();
     $('#ai-results').scrollIntoView({behavior:'smooth',block:'start'});
-    toast('✅ AI siap menulis. Semak sebelum post');
+    toast('✅ AI percuma siap menulis.');
   }catch(e){toast('AI gagal: '+(e.name==='AbortError'?'masa tamat':e.message)+'. Guna butang templat')}
   finally{clearTimeout(to);btn.disabled=false;btn.textContent=old}
 }
@@ -564,7 +561,7 @@ async function aiWrite(btn){
 function fillSettings(){
   $('#st-staff').value=settings.staffName;$('#st-phone').value=settings.waPhone;$('#st-cta').value=settings.waCta;
   $('#st-text').value=settings.waText;$('#st-tags').value=settings.hashtags;$('#st-remind').checked=!!settings.remind;
-  $('#st-ai-url').value=settings.aiUrl||'';$('#st-ai-key').value=settings.aiKey||'';
+  $('#st-ai-url').value=settings.aiUrl||'https://dawn-shadow-826c.empayars12.workers.dev';$('#st-ai-key').value=settings.aiKey||'';
 }
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('#btn-install').classList.remove('hidden')});
