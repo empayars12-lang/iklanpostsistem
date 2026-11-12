@@ -1,4 +1,4 @@
-// Cloudflare Worker: AI percuma menggunakan model Llama 3.1
+// Cloudflare Worker: AI percuma menggunakan model Llama 3.2
 export default {
   async fetch(request, env) {
     const cors = {
@@ -21,8 +21,8 @@ export default {
     try {
       const body = await request.json();
 
-      // Memanggil model percuma Cloudflare AI (Llama 3.1 8B)
-      const aiResponse = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      // Memanggil model percuma Cloudflare AI (Llama 3.2 3B Instruct)
+      const aiResponse = await env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
         messages: [
           { 
             role: "system", 
