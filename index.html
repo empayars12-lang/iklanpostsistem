@@ -1,732 +1,623 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ESK Kreatif — Jadual Iklan Harian & Penjana Kapsyen AI Pelbagai Format</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #f1f5f9;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ESK Kreatif">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>ESK Kreatif</title>
+<style>
+:root{--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--bg:#f1f5f9;--brand:#047857;--brandbg:#ecfdf5;--blue:#2563eb;--pink:#db2777;--amber:#b45309;--red:#dc2626}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:calc(92px + env(safe-area-inset-bottom));-webkit-text-size-adjust:100%}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+input,select,textarea{font:inherit;font-size:16px;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+input[type=checkbox]{width:20px;height:20px;padding:0;accent-color:var(--brand)}
+textarea{resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+.hidden{display:none!important}
+.wrap{max-width:680px;margin:0 auto;padding:14px}
+.top{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;padding:calc(env(safe-area-inset-top) + 10px) 16px 12px}
+.top .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:11px;background:#fff;color:var(--ink);font-weight:800;display:grid;place-items:center;font-size:18px}
+.top h1{margin:0;font-size:16px;line-height:1.1}.top small{color:#94a3b8;font-size:12px}
+.top .sp{flex:1}.top .now{font-size:12px;color:#cbd5e1;text-align:right}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:8px}.between{justify-content:space-between}
+h2{font-size:18px;margin:4px 0 10px}h3{font-size:15px;margin:6px 0}
+.sec{font-size:12px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:16px 2px 8px}
+.muted{color:var(--mut);font-size:13px}
+.btn{min-height:46px;padding:0 16px;border-radius:13px;font-weight:700;background:#fff;border:1px solid var(--line);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.grn{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn.blk{width:100%}.btn.sm{min-height:38px;padding:0 12px;font-size:13px}.btn:active{transform:scale(.98)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 12px}.stat b{display:block;font-size:24px;line-height:1.1}.stat span{font-size:12px;color:var(--mut)}
+.next{background:var(--ink);color:#fff;border:0}.next .big{font-size:30px;font-weight:800;letter-spacing:-.02em}.next.late{background:#92400e}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font-weight:600;font-size:14px}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on.Facebook{background:var(--blue);border-color:var(--blue)}.chip.on.Instagram{background:var(--pink);border-color:var(--pink)}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.chips.scroll .chip{flex:none}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.day{flex:1;min-width:48px;border-radius:14px;background:#fff;border:1px solid var(--line);padding:8px 0;text-align:center}
+.day small{display:block;color:var(--mut);font-size:11px;font-weight:600}.day b{font-size:17px}
+.day.on{background:var(--ink);color:#fff;border-color:var(--ink)}.day.on small{color:#cbd5e1}
+.day i{display:block;height:6px;font-style:normal;font-size:8px;line-height:6px;color:var(--brand);margin-top:2px}.day.on i{color:#6ee7b7}
+.post.done{opacity:.72}
+.time{font-size:22px;font-weight:800;letter-spacing:-.02em}.time small{font-size:12px;color:var(--mut);font-weight:600;margin-left:4px}
+.pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px}
+.pill.sch{background:#dbeafe;color:#1d4ed8}.pill.drf{background:#fef3c7;color:#92400e}.pill.don{background:#d1fae5;color:#065f46}.pill.late{background:#fee2e2;color:#b91c1c}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;background:#f1f5f9;color:#475569}
+.tag.Facebook{background:#dbeafe;color:#1d4ed8}.tag.Instagram{background:#fce7f3;color:#be185d}.tag.TikTok{background:#e2e8f0;color:#0f172a}
+.cap{white-space:pre-line;font-size:14px;color:#334155;margin:6px 0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cap.open{-webkit-line-clamp:unset;display:block}
+.post img.th{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin:4px 0}
+.acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.acts .btn{padding:0 6px;font-size:13px}
+.mini{display:flex;justify-content:space-around;margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+.mini button{padding:8px 10px;font-size:13px;color:var(--mut);font-weight:600}.mini .d{color:var(--red)}
+.empty{text-align:center;padding:26px 14px;color:var(--mut);border:2px dashed var(--line);border-radius:18px;margin-bottom:12px;background:#fff}
+.check{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px}.check:last-child{border:0}.check.d span{text-decoration:line-through;color:#94a3b8}
+.idea{display:block;width:100%;text-align:left;background:var(--brandbg);border:1px solid #a7f3d0;border-radius:14px;padding:12px;margin-top:8px}
+.idea b{color:#065f46}.idea span{display:block;font-size:13px;color:#047857;margin-top:2px}
+label.f{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#e2e8f0;border-radius:13px;padding:4px}
+.seg button{min-height:40px;border-radius:10px;font-weight:700;font-size:13px;color:#475569}.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px #0002}
+.tp{display:grid;grid-template-columns:1fr auto 1fr 1.3fr;gap:6px;align-items:center}.tp .seg{grid-template-columns:1fr 1fr}.tp span{font-weight:800}
+.out{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
+.out .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-weight:800;font-size:13px}
+.out textarea{font-size:14px;min-height:70px}
+.up{height:120px;border:2px dashed #cbd5e1;border-radius:16px;display:grid;place-items:center;text-align:center;overflow:hidden;background:#fff;cursor:pointer;color:var(--mut);font-weight:600}
+.up img{width:100%;height:100%;object-fit:cover}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav .in{max-width:680px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:end}
+nav button{padding:8px 0 7px;font-size:11px;font-weight:700;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:58px}
+nav button em{font-style:normal;font-size:21px;line-height:1.2}nav button.on{color:var(--ink)}
+nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius:50%;margin:0 auto 10px;font-size:30px;font-weight:300;display:grid;place-items:center;box-shadow:0 6px 16px #04785766;min-height:0;padding:0}
+.ov{position:fixed;inset:0;z-index:50;background:#0f172a99;display:none;align-items:flex-end;justify-content:center}.ov.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:680px;max-height:94vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:6px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+.sheet .grab{width:42px;height:5px;border-radius:9px;background:#cbd5e1;margin:6px auto 10px}
+.sheet .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.sticky{position:sticky;bottom:-20px;background:#fff;padding:12px 0 4px;display:flex;gap:8px;margin-top:14px}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+@media(min-width:700px){.wrap{padding:22px 14px}}
+</style>
 </head>
-<body class="text-slate-800 antialiased selection:bg-emerald-100 selection:text-emerald-900">
+<body>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 border border-slate-700">
-      <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
-      <span id="toast-msg" class="text-sm font-medium">Berjaya disalin!</span>
+<header class="top"><div class="in">
+  <div class="logo">E</div>
+  <div><h1 id="t-title">ESK Kreatif</h1><small id="t-sub">Pembantu post iklan</small></div>
+  <div class="sp"></div>
+  <div class="now" id="t-now"></div>
+</div></header>
+
+<!-- ================= HARI INI ================= -->
+<main class="wrap view" id="v-today"></main>
+
+<!-- ================= JADUAL ================= -->
+<main class="wrap view hidden" id="v-plan">
+  <div class="row between" style="margin-bottom:6px">
+    <button class="btn sm" data-act="wk" data-n="-7">‹ Minggu</button>
+    <b id="plan-month" style="font-size:14px"></b>
+    <button class="btn sm" data-act="wk" data-n="7">Minggu ›</button>
+  </div>
+  <div class="strip" id="strip"></div>
+  <div class="chips scroll" id="plan-filters" style="margin:4px 0 12px"></div>
+  <div id="plan-list"></div>
+</main>
+
+<!-- ================= JANA AI ================= -->
+<main class="wrap view hidden" id="v-ai">
+  <div class="card">
+    <h2 style="margin-top:0">✨ Penjana Ayat Jualan</h2>
+    <p class="muted" style="margin:0">Ayat disusun ikut formula: <b>masalah pelanggan → penyelesaian → ajakan tempah</b>. Pilih sahaja, tak perlu menaip panjang.</p>
+
+    <label class="f">1. Apa yang nak dijual?</label>
+    <div class="chips" id="g-service"></div>
+
+    <label class="f">2. Masalah pelanggan yang nak diselesaikan</label>
+    <div class="chips" id="g-problem"></div>
+
+    <label class="f">3. Gaya bahasa</label>
+    <div class="seg" id="g-tone">
+      <button data-k="tone" data-v="kel">🧢 Kelantan</button>
+      <button data-k="tone" data-v="std">💬 Santai</button>
+      <button data-k="tone" data-v="for">👔 Formal</button>
     </div>
+
+    <label class="f">4. Maklumat tambahan <span class="muted" style="font-weight:500">(pilihan)</span></label>
+    <input id="ai-prod" placeholder="Contoh terkini: Apron hitam, 50 helai">
+    <div style="height:8px"></div>
+    <input id="ai-time" placeholder="Tempoh siap: cth 5-7 hari bekerja">
+    <div style="height:8px"></div>
+    <input id="ai-offer" placeholder="Tawaran: cth Diskaun 10% untuk 20 helai pertama">
+    <div style="height:8px"></div>
+    <select id="ai-urg">
+      <option value="none">Tiada dorongan masa</option>
+      <option value="slot">⏳ Slot tempahan minggu ini terhad</option>
+      <option value="today">🔥 Tawaran tamat hari ini</option>
+      <option value="weekend">🔥 Tawaran sehingga hujung minggu</option>
+    </select>
+    <p class="muted" style="margin:6px 2px 0">Isi hanya jika betul. Ayat dorongan ini mesti benar-benar berlaku.</p>
+
+    <label class="f">5. Gambar produk <span class="muted" style="font-weight:500">(pilihan)</span></label>
+    <label class="up" id="ai-up"><span id="ai-up-t">📷 Ketik untuk ambil / pilih gambar</span><img id="ai-up-img" class="hidden" alt=""><input type="file" id="ai-file" accept="image/*" class="hidden"></label>
+
+    <div class="sw"><span>Sertakan link WhatsApp</span><input type="checkbox" id="ai-wa" checked></div>
+    <div class="sw" style="padding-top:0"><span>Sertakan hashtag</span><input type="checkbox" id="ai-tags" checked></div>
+
+    <button class="btn grn blk" data-act="gen">✨ Jana Ayat Iklan</button>
   </div>
 
-  <!-- Main 3-Panel Layout -->
-  <div class="min-h-screen flex flex-col lg:flex-row">
-
-    <!-- PANEL 1: LEFT SIDEBAR (Navigasi & Senarai Semak) -->
-    <aside class="w-full lg:w-72 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between shrink-0">
-      <div class="p-5">
-        <!-- Brand Header -->
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
-              E
-            </div>
-            <div>
-              <h1 class="font-extrabold text-slate-900 leading-tight tracking-tight">ESK Kreatif</h1>
-              <p class="text-xs text-slate-500 font-medium">Ad Scheduler & AI Copy</p>
-            </div>
-          </div>
-          <button onclick="openSettingsModal()" title="Tetapan Hashtag & WhatsApp" class="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition">
-            <i data-lucide="settings" class="w-5 h-5"></i>
-          </button>
-        </div>
-
-        <!-- Navigation Menu -->
-        <nav class="space-y-1 mb-6">
-          <button onclick="switchTab('utama')" id="nav-utama" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm transition">
-            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-            <span>Jadual Harian</span>
-          </button>
-          <button onclick="switchTab('semua')" id="nav-semua" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-            <i data-lucide="calendar-days" class="w-4 h-4"></i>
-            <span>Semua Jadual</span>
-          </button>
-          <button onclick="openSettingsModal()" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
-            <span class="flex items-center gap-3">
-              <i data-lucide="hash" class="w-4 h-4 text-emerald-600"></i>
-              <span>Set # & WhatsApp</span>
-            </span>
-            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Auto</span>
-          </button>
-        </nav>
-
-        <!-- Ringkasan Tetapan Auto Footer -->
-        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 mb-6">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Footer Post Tetap</span>
-            <button onclick="openSettingsModal()" class="text-xs font-semibold text-emerald-700 hover:underline">Ubah</button>
-          </div>
-          <div class="space-y-2 text-xs text-slate-600">
-            <div class="flex items-start gap-2">
-              <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0"></i>
-              <span id="sidebar-wa-preview" class="font-mono text-[11px] break-all text-slate-700">wasap.my/60139727212</span>
-            </div>
-            <div class="flex items-start gap-2">
-              <i data-lucide="hash" class="w-3.5 h-3.5 text-blue-600 mt-0.5 shrink-0"></i>
-              <span id="sidebar-hash-preview" class="text-[11px] line-clamp-2 text-slate-600">#ESKPrinting #CetakBajuKelantan...</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Senarai Semak Harian -->
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Senarai Semak Harian</h2>
-            <span id="checklist-progress" class="text-xs font-semibold text-slate-500">0/4</span>
-          </div>
-          <div id="checklist-container" class="space-y-2"></div>
-          <div class="mt-3 flex gap-1.5">
-            <input type="text" id="new-task-input" placeholder="Tambah tugasan..." class="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') addChecklistItem()">
-            <button onclick="addChecklistItem()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">+</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- User Profile Footer -->
-      <div class="p-4 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
-            ES
-          </div>
-          <div>
-            <p class="text-xs font-bold text-slate-800">Empayar S Printing</p>
-            <p class="text-[11px] text-slate-500">Ketereh, Kelantan</p>
-          </div>
-        </div>
-        <button onclick="resetDemoData()" title="Set Semula Data" class="text-xs text-slate-400 hover:text-slate-600">
-          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </aside>
-
-    <!-- PANEL 2: CENTER MAIN FEED (Jadual Iklan Harian) -->
-    <main class="flex-1 p-5 lg:p-7 overflow-y-auto custom-scrollbar">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 id="main-view-title" class="text-2xl font-extrabold text-slate-900 tracking-tight">Jadual Iklan Harian</h2>
-          <p class="text-sm text-slate-500 mt-0.5">Susun kempen printing & pakaian mengikut waktu puncak media sosial</p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2.5">
-          <input type="date" id="filter-date" onchange="renderPosts()" class="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
-          <button onclick="openPostModal()" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-sm flex items-center gap-2 transition">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>Buat Jadual Baru</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Quick Stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
-          <p class="text-xs font-medium text-slate-500">Jumlah Post</p>
-          <p id="stat-total" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
-          <p class="text-xs font-medium text-slate-500">Dijadualkan</p>
-          <p id="stat-scheduled" class="text-2xl font-extrabold text-blue-600 mt-1">0</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
-          <p class="text-xs font-medium text-slate-500">Selesai</p>
-          <p id="stat-published" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
-          <p class="text-xs font-medium text-slate-500">Draf</p>
-          <p id="stat-draft" class="text-2xl font-extrabold text-amber-500 mt-1">0</p>
-        </div>
-      </div>
-
-      <!-- Filter Bar -->
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-        <div class="flex flex-wrap items-center gap-1.5">
-          <button onclick="setPlatformFilter('ALL')" data-filter="ALL" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white transition">Semua</button>
-          <button onclick="setPlatformFilter('Facebook')" data-filter="Facebook" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">Facebook</button>
-          <button onclick="setPlatformFilter('Instagram')" data-filter="Instagram" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">Instagram</button>
-          <button onclick="setPlatformFilter('TikTok')" data-filter="TikTok" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">TikTok</button>
-        </div>
-        <select id="filter-category" onchange="renderPosts()" class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none">
-          <option value="ALL">Semua Kategori</option>
-          <option value="Servis Printing">Servis Printing</option>
-          <option value="Jualan Pakaian">Jualan Pakaian</option>
-          <option value="Promo & Testimoni">Promo & Testimoni</option>
-        </select>
-      </div>
-
-      <!-- Posts List -->
-      <div id="posts-container" class="space-y-4"></div>
-    </main>
-
-    <!-- PANEL 3: RIGHT SIDEBAR (AI Penganalisis & Pelbagai Format Kapsyen) -->
-    <aside class="w-full lg:w-[430px] bg-white border-t lg:border-t-0 lg:border-l border-slate-200 p-5 flex flex-col justify-between shrink-0 overflow-y-auto custom-scrollbar">
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h2 class="font-extrabold text-slate-900 text-base">AI Penjana Pelbagai Format</h2>
-          </div>
-          <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">Smart AI</span>
-        </div>
-
-        <!-- Image Upload Box -->
-        <div class="mb-3">
-          <label for="ai-image-input" class="block cursor-pointer group">
-            <div id="ai-image-preview-box" class="relative h-32 rounded-2xl border-2 border-dashed border-slate-300 group-hover:border-emerald-500 bg-slate-50 flex flex-col items-center justify-center overflow-hidden transition">
-              <img id="ai-preview-img" src="" alt="Preview" class="hidden w-full h-full object-cover">
-              <div id="ai-upload-placeholder" class="text-center p-3">
-                <div class="w-8 h-8 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center mx-auto mb-1 text-slate-600 group-hover:text-emerald-600">
-                  <i data-lucide="image-plus" class="w-4 h-4"></i>
-                </div>
-                <p class="text-xs font-bold text-slate-700">Muat Naik Gambar Produk/Printing</p>
-              </div>
-            </div>
-          </label>
-          <input type="file" id="ai-image-input" accept="image/*" class="hidden" onchange="handleAIImageUpload(event)">
-        </div>
-
-        <!-- Konteks Ringkas -->
-        <div class="mb-3">
-          <input type="text" id="ai-context-input" placeholder="Cth: Apron hitam Skin Dessert, 50 helai..." class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600">
-        </div>
-
-        <!-- Tone Selector -->
-        <div class="mb-3">
-          <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
-            <button type="button" id="tone-kelantan" onclick="setAITone('kelantan')" class="py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1 transition">
-              <span>🧢 Santai Kelantan</span>
-            </button>
-            <button type="button" id="tone-formal" onclick="setAITone('formal')" class="py-1.5 px-3 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1 transition">
-              <span>👔 Formal</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Generate Button -->
-        <button onclick="generateAICaptionsMulti()" id="btn-generate-ai" class="w-full py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-sm flex items-center justify-center gap-2 transition mb-4">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
-          <span>Jana Semua Format Kapsyen AI</span>
-        </button>
-
-        <!-- SECTIONS: MULTI-FORMAT OUTPUTS -->
-        <div class="space-y-3">
-          
-          <!-- FORMAT 1: WHATSAPP / STATUS (PENDEK) -->
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] font-bold text-emerald-700 flex items-center gap-1">
-                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
-                <span>1. WhatsApp / Status (Pendek & Terus)</span>
-              </span>
-              <button onclick="copySpecificOutput('ai-out-wa')" class="text-[11px] font-bold text-slate-600 hover:text-emerald-700">Salin</button>
-            </div>
-            <textarea id="ai-out-wa" rows="2" class="w-full text-[11px] p-2 rounded-lg border border-slate-200 bg-white focus:outline-none" placeholder="Ayat WhatsApp pendek..."></textarea>
-          </div>
-
-          <!-- FORMAT 2: REELS / TIKTOK (PENDEK & HOOK) -->
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] font-bold text-pink-600 flex items-center gap-1">
-                <i data-lucide="video" class="w-3.5 h-3.5"></i>
-                <span>2. TikTok / IG Reels (Hook & Ringkas)</span>
-              </span>
-              <button onclick="copySpecificOutput('ai-out-reel')" class="text-[11px] font-bold text-slate-600 hover:text-pink-600">Salin</button>
-            </div>
-            <textarea id="ai-out-reel" rows="2" class="w-full text-[11px] p-2 rounded-lg border border-slate-200 bg-white focus:outline-none" placeholder="Ayat Reels / TikTok pendek..."></textarea>
-          </div>
-
-          <!-- FORMAT 3: POST UTAMA (PANJANG & LENGKAP) -->
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-[11px] font-bold text-blue-600 flex items-center gap-1">
-                <i data-lucide="layout-template" class="w-3.5 h-3.5"></i>
-                <span>3. Post Utama Facebook / IG (Panjang)</span>
-              </span>
-              <button onclick="copySpecificOutput('ai-out-main')" class="text-[11px] font-bold text-slate-600 hover:text-blue-600">Salin</button>
-            </div>
-            <textarea id="ai-out-main" rows="4" class="w-full text-[11px] p-2 rounded-lg border border-slate-200 bg-white focus:outline-none" placeholder="Ayat post utama lengkap..."></textarea>
-          </div>
-
-        </div>
-
-        <!-- BUTANG SISIPAN PANTAS # & WASAP -->
-        <div class="grid grid-cols-2 gap-2 mt-4 mb-2">
-          <button type="button" onclick="appendSavedHashtagsToMain()" class="py-2 px-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition">
-            <i data-lucide="hash" class="w-3.5 h-3.5"></i>
-            <span>+ # Tetap ke Post Utama</span>
-          </button>
-          <button type="button" onclick="appendSavedWhatsAppToMain()" class="py-2 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition">
-            <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-            <span>+ Link Wasap ke Utama</span>
-          </button>
-        </div>
-
-        <!-- Send to Schedule -->
-        <button onclick="sendMainCaptionToModal()" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
-          <i data-lucide="calendar-plus" class="w-4 h-4"></i>
-          <span>Hantar Post Utama ke Jadual</span>
-        </button>
-      </div>
-    </aside>
-
-  </div>
-
-  <!-- MODAL: BUAT / UBAH JADUAL -->
-  <div id="post-modal" class="fixed inset-0 z-40 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200">
-      <div class="p-5 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
-        <h3 id="modal-title" class="font-extrabold text-lg text-slate-900">Buat Jadual Iklan Baru</h3>
-        <button onclick="closePostModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <form id="post-form" onsubmit="savePost(event)" class="p-5 space-y-4">
-        <input type="hidden" id="edit-post-id" value="">
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Platform</label>
-          <div class="grid grid-cols-3 gap-2">
-            <label class="cursor-pointer">
-              <input type="checkbox" name="platform" value="Facebook" class="peer hidden" checked>
-              <div class="py-2 px-3 rounded-xl border border-slate-200 text-center text-xs font-bold text-slate-600 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 transition">Facebook</div>
-            </label>
-            <label class="cursor-pointer">
-              <input type="checkbox" name="platform" value="Instagram" class="peer hidden">
-              <div class="py-2 px-3 rounded-xl border border-slate-200 text-center text-xs font-bold text-slate-600 peer-checked:bg-pink-600 peer-checked:text-white peer-checked:border-pink-600 transition">Instagram</div>
-            </label>
-            <label class="cursor-pointer">
-              <input type="checkbox" name="platform" value="TikTok" class="peer hidden">
-              <div class="py-2 px-3 rounded-xl border border-slate-200 text-center text-xs font-bold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">TikTok</div>
-            </label>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Kempen</label>
-            <select id="post-category" class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200">
-              <option value="Servis Printing">Servis Printing</option>
-              <option value="Jualan Pakaian">Jualan Pakaian</option>
-              <option value="Promo & Testimoni">Promo & Testimoni</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Status</label>
-            <select id="post-status" class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200">
-              <option value="Dijadualkan">🔵 Dijadualkan</option>
-              <option value="Draf">🟡 Draf</option>
-              <option value="Selesai">🟢 Selesai</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Tarikh Post</label>
-            <input type="date" id="post-date" required class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Masa Post</label>
-            <input type="time" id="post-time" value="20:30" required class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200">
-          </div>
-        </div>
-
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-          <span class="block text-[11px] font-bold text-slate-600 mb-2">⚡ Pilihan Masa Puncak:</span>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="setPeakTime('08:30')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">08:30 AM</button>
-            <button type="button" onclick="setPeakTime('13:00')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">01:00 PM</button>
-            <button type="button" onclick="setPeakTime('20:30')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700">08:30 PM</button>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Tajuk / Idea Hook</label>
-          <input type="text" id="post-title" required placeholder="Cth: Batch Apron Skin Dessert" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200">
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="text-xs font-bold text-slate-700">Ayat Iklan (Copywriting)</label>
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="appendSavedHashtags('post-caption')" class="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-[11px] font-bold">+ # Set</button>
-              <button type="button" onclick="appendSavedWhatsApp('post-caption')" class="px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md text-[11px] font-bold">+ wasap.my</button>
-            </div>
-          </div>
-          <textarea id="post-caption" rows="5" required class="w-full p-3 text-xs leading-relaxed rounded-xl border border-slate-200"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Gambar Rujukan</label>
-          <input type="file" id="post-image-file" accept="image/*" onchange="handleModalImageUpload(event)" class="w-full text-xs text-slate-500">
-          <img id="modal-image-preview" src="" class="hidden mt-2 h-24 rounded-lg object-cover border border-slate-200">
-        </div>
-
-        <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-200">
-          <button type="button" onclick="closePostModal()" class="px-4 py-2 text-xs font-bold text-slate-600">Batal</button>
-          <button type="submit" class="px-5 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl shadow-sm">Simpan Jadual</button>
-        </div>
-      </form>
+  <div id="ai-results" class="hidden">
+    <div class="row between" style="margin:4px 2px 10px">
+      <b>Hasil untuk disalin</b>
+      <button class="btn sm" data-act="regen">🔄 Variasi lain</button>
     </div>
+    <div class="out"><div class="h"><span>💬 WhatsApp / Status</span><span class="row"><button class="btn sm" data-act="ocopy" data-t="o-wa">Salin</button><button class="btn sm" data-act="oshare" data-t="o-wa">Kongsi</button></span></div><textarea id="o-wa"></textarea></div>
+    <div class="out"><div class="h"><span>🎵 TikTok / Reels (kapsyen)</span><span class="row"><button class="btn sm" data-act="ocopy" data-t="o-reel">Salin</button><button class="btn sm" data-act="oshare" data-t="o-reel">Kongsi</button></span></div><textarea id="o-reel"></textarea></div>
+    <div class="out"><div class="h"><span>🎬 Idea video 15 saat</span><span class="row"><button class="btn sm" data-act="ocopy" data-t="o-vid">Salin</button></span></div><textarea id="o-vid" style="min-height:130px"></textarea></div>
+    <div class="out"><div class="h"><span>📣 Post Utama Facebook / IG</span><span class="row"><button class="btn sm" data-act="ocopy" data-t="o-main">Salin</button><button class="btn sm" data-act="oshare" data-t="o-main">Kongsi</button></span></div><textarea id="o-main" style="min-height:260px"></textarea><div class="muted" id="o-count" style="margin-top:4px"></div></div>
+    <button class="btn pri blk" data-act="tosched">🗓 Simpan Post Utama ke Jadual</button>
+  </div>
+</main>
+
+<!-- ================= TETAPAN ================= -->
+<main class="wrap view hidden" id="v-more">
+  <div class="card">
+    <h2 style="margin-top:0">👤 Staf</h2>
+    <label class="f" style="margin-top:0">Nama staf (muncul pada post)</label>
+    <input id="st-staff" placeholder="Cth: Aiman">
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">📲 Footer tetap iklan</h2>
+    <label class="f" style="margin-top:0">No. WhatsApp (60...)</label>
+    <input id="st-phone" inputmode="numeric">
+    <label class="f">Ayat ajakan (CTA)</label>
+    <input id="st-cta">
+    <label class="f">Mesej auto-isi dalam WhatsApp pelanggan</label>
+    <input id="st-text">
+    <label class="f">Hashtag tetap</label>
+    <textarea id="st-tags" rows="3"></textarea>
+    <button class="btn grn blk" style="margin-top:12px" data-act="savesettings">Simpan Tetapan</button>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">🔔 Peringatan</h2>
+    <div class="sw"><span>Ingatkan bila tiba masa post<br><small class="muted">Berfungsi bila app dibuka / berada di latar belakang.</small></span><input type="checkbox" id="st-remind"></div>
+  </div>
+  <div class="card" id="install-card">
+    <h2 style="margin-top:0">📱 Pasang di handphone</h2>
+    <button class="btn pri blk hidden" id="btn-install" data-act="install">Pasang app ke skrin utama</button>
+    <p class="muted" id="install-hint" style="margin:8px 0 0">Android (Chrome): menu ⋮ → <b>Pasang app</b>.<br>iPhone (Safari): butang Kongsi → <b>Tambah ke Skrin Utama</b>.</p>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">💾 Sandaran data</h2>
+    <p class="muted" style="margin-top:0">Data disimpan dalam handphone ini sahaja. Eksport sandaran sebelum tukar telefon atau kosongkan data pelayar.</p>
+    <div class="row"><button class="btn blk" data-act="export">⬇️ Eksport</button><label class="btn blk" style="cursor:pointer">⬆️ Import<input type="file" id="imp-file" accept=".json,application/json" class="hidden"></label></div>
+    <button class="btn blk" style="margin-top:8px;color:var(--red)" data-act="reset">Padam semua data</button>
+  </div>
+</main>
+
+<nav><div class="in">
+  <button data-nav="today"><em>🏠</em>Hari Ini</button>
+  <button data-nav="plan"><em>🗓</em>Jadual</button>
+  <button class="fab" data-act="newpost" aria-label="Post baru">+</button>
+  <button data-nav="ai"><em>✨</em>Jana AI</button>
+  <button data-nav="more"><em>⚙️</em>Tetapan</button>
+</div></nav>
+
+<!-- ================= SHEET POST ================= -->
+<div class="ov" id="ov-post"><div class="sheet">
+  <div class="grab"></div>
+  <div class="hd"><h2 id="sh-title" style="margin:0">Post Baru</h2><button class="btn sm" data-act="closesheet">Tutup</button></div>
+
+  <label class="f">Platform</label>
+  <div class="chips" id="ps-plat">
+    <button type="button" class="chip Facebook" data-p="Facebook">Facebook</button>
+    <button type="button" class="chip Instagram" data-p="Instagram">Instagram</button>
+    <button type="button" class="chip" data-p="TikTok">TikTok</button>
   </div>
 
-  <!-- MODAL: TETAPAN # & WHATSAPP -->
-  <div id="settings-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
-        <h3 class="font-extrabold text-base text-slate-900">Tetapan # & Link wasap.my</h3>
-        <button onclick="closeSettingsModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
+  <label class="f">Tarikh</label>
+  <input type="date" id="ps-date">
 
-      <form onsubmit="saveFooterSettings(event)" class="p-5 space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">No. Telefon WhatsApp (601...)</label>
-          <input type="text" id="setting-wa-phone" required class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Ayat CTA WhatsApp</label>
-          <input type="text" id="setting-wa-cta" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Mesej Auto-Isi WhatsApp</label>
-          <input type="text" id="setting-wa-text" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Hashtag Tetap</label>
-          <textarea id="setting-hashtags" rows="3" required class="w-full p-3 text-xs rounded-xl border border-slate-200"></textarea>
-        </div>
-        <div class="pt-2 flex justify-end gap-2">
-          <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-bold text-slate-600">Batal</button>
-          <button type="submit" class="px-5 py-2 bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm">Simpan</button>
-        </div>
-      </form>
-    </div>
+  <label class="f">Masa post</label>
+  <div class="tp">
+    <select id="ps-h"></select><span>:</span><select id="ps-m"></select>
+    <div class="seg" id="ps-ap"><button type="button" data-v="AM">AM</button><button type="button" data-v="PM">PM</button></div>
+  </div>
+  <div class="chips scroll" id="ps-peak" style="margin-top:8px"></div>
+
+  <label class="f">Tajuk / idea hook</label>
+  <input id="ps-title" placeholder="Cth: Apron 50 helai untuk kafe">
+
+  <div class="row between" style="margin-top:12px"><label class="f" style="margin:0">Ayat iklan</label>
+    <span class="row"><button type="button" class="btn sm" data-act="addtags">+ #</button><button type="button" class="btn sm" data-act="addwa">+ WhatsApp</button></span></div>
+  <textarea id="ps-cap" rows="7" style="margin-top:6px"></textarea>
+  <div class="muted" id="ps-count" style="margin-top:4px"></div>
+
+  <div class="row" style="gap:8px;margin-top:12px">
+    <div style="flex:1"><label class="f" style="margin-top:0">Kategori</label>
+      <select id="ps-cat"><option>Servis Printing</option><option>Jualan Pakaian</option><option>Promo & Testimoni</option></select></div>
+    <div style="flex:1"><label class="f" style="margin-top:0">Status</label>
+      <select id="ps-status"><option>Dijadualkan</option><option>Draf</option><option>Selesai</option></select></div>
   </div>
 
-  <script>
-    const TODAY = new Date().toISOString().split('T')[0];
+  <label class="f">Gambar</label>
+  <label class="up" style="height:90px"><span id="ps-img-t">📷 Tambah gambar</span><input type="file" id="ps-file" accept="image/*" class="hidden"></label>
 
-    const DEFAULT_SETTINGS = {
-      waPhone: '60139727212',
-      waCta: '📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',
-      waText: 'Hai ESK Printing, saya nak tanya pakej printing / pakaian',
-      hashtags: '#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',
-      autoAppend: true
-    };
+  <div class="sticky"><button class="btn blk" data-act="closesheet">Batal</button><button class="btn pri blk" data-act="savepost">Simpan</button></div>
+</div></div>
 
-    const DEFAULT_CHECKLIST = [
-      { id: 1, text: 'Sediakan blok & dakwat cetak DTF / Silk Screen', done: true },
-      { id: 2, text: 'Semak jadual post pagi & tengah hari', done: true },
-      { id: 3, text: 'Ambil gambar/video proses printing hari ini', done: false },
-      { id: 4, text: 'Balas semua komen & PM WhatsApp pelanggan', done: false }
-    ];
+<div id="toast"></div>
 
-    const DEFAULT_POSTS = [
-      {
-        id: 'post-1',
-        date: TODAY,
-        time: '08:30',
-        platforms: ['Facebook', 'Instagram'],
-        category: 'Servis Printing',
-        status: 'Selesai',
-        title: 'Behind The Scenes: Cetakan Apron Skin Dessert',
-        caption: 'Pagi-pagi lagi meja cetak kita dah penuh! Siapkan batch apron hitam untuk team Skin Dessert.',
-        image: ''
-      }
-    ];
-
-    let appSettings = JSON.parse(localStorage.getItem('esk_settings')) || DEFAULT_SETTINGS;
-    let checklist = JSON.parse(localStorage.getItem('esk_checklist')) || DEFAULT_CHECKLIST;
-    let posts = JSON.parse(localStorage.getItem('esk_posts')) || DEFAULT_POSTS;
-    let currentPlatformFilter = 'ALL';
-    let currentViewMode = 'utama';
-    let currentAITone = 'kelantan';
-    let currentAIImageBase64 = '';
-    let modalImageBase64 = '';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('filter-date').value = TODAY;
-      document.getElementById('post-date').value = TODAY;
-      updateSettingsUI();
-      renderChecklist();
-      renderPosts();
-      lucide.createIcons();
-    });
-
-    function getWhatsAppBlock() {
-      const cleanPhone = appSettings.waPhone.replace(/[^0-9]/g, '');
-      const encodedText = appSettings.waText ? `/${encodeURIComponent(appSettings.waText)}` : '';
-      return `${appSettings.waCta}\nhttps://wasap.my/${cleanPhone}${encodedText}`;
+<script>
+/* ---------- Util ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
+const SV=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast('Storan penuh. Padam gambar lama atau eksport sandaran.');return false}};
+const HARI=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'], BLN=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const pdate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const todayStr=()=>dstr(new Date());
+const addDays=(s,n)=>{const d=pdate(s);d.setDate(d.getDate()+n);return dstr(d)};
+const fmtDate=s=>{const d=pdate(s);return `${HARI[d.getDay()].slice(0,3)}, ${d.getDate()} ${BLN[d.getMonth()]}`};
+const fmt12=t=>{const [h,m]=t.split(':').map(Number);return `${h%12||12}:${pad(m)} ${h>=12?'PM':'AM'}`};
+const mins=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
+const nowHM=()=>{const n=new Date();return pad(n.getHours())+':'+pad(n.getMinutes())};
+const byTime=(a,b)=>(a.date+a.time).localeCompare(b.date+b.time);
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2300)}
+async function copyText(txt){
+  try{await navigator.clipboard.writeText(txt);return true}catch(e){}
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity=0;document.body.appendChild(ta);ta.select();
+  let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();return ok;
+}
+async function shareText(text,img){
+  try{
+    if(img&&navigator.canShare){
+      const b=await (await fetch(img)).blob();const f=new File([b],'iklan.jpg',{type:b.type||'image/jpeg'});
+      if(navigator.canShare({files:[f]})){await navigator.share({files:[f],text});return}
     }
+    if(navigator.share){await navigator.share({text});return}
+  }catch(e){if(e&&e.name==='AbortError')return}
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+}
+function compress(file,max=900,q=.72){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height));const c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};i.onerror=rej;i.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
 
-    function updateSettingsUI() {
-      document.getElementById('sidebar-wa-preview').textContent = `wasap.my/${appSettings.waPhone}`;
-      document.getElementById('sidebar-hash-preview').textContent = appSettings.hashtags;
-    }
+/* ---------- Data ---------- */
+const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false};
+const DEF_CHECK=[
+ {id:1,text:'Sediakan blok & dakwat cetak DTF / Silk Screen',done:false},
+ {id:2,text:'Semak jadual post pagi, tengah hari & malam',done:false},
+ {id:3,text:'Ambil gambar/video proses printing hari ini',done:false},
+ {id:4,text:'Balas semua komen & PM WhatsApp pelanggan',done:false}];
+let settings={...DEF_SET,...LS('esk_settings',{})};
+let checklist=LS('esk_checklist',DEF_CHECK);
+let posts=LS('esk_posts',[]);
+if(LS('esk_check_date','')!==todayStr()){checklist=checklist.map(c=>({...c,done:false}));SV('esk_checklist',checklist);SV('esk_check_date',todayStr())}
+const savePosts=()=>SV('esk_posts',posts);
 
-    function renderChecklist() {
-      const container = document.getElementById('checklist-container');
-      container.innerHTML = '';
-      let doneCount = 0;
-      checklist.forEach(item => {
-        if (item.done) doneCount++;
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 group';
-        row.innerHTML = `
-          <label class="flex items-start gap-2 cursor-pointer flex-1">
-            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklist(${item.id})" class="mt-0.5 rounded text-emerald-600">
-            <span class="text-xs ${item.done ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">${item.text}</span>
-          </label>
-        `;
-        container.appendChild(row);
-      });
-      document.getElementById('checklist-progress').textContent = `${doneCount}/${checklist.length}`;
-    }
+let view='today', sel=todayStr(), stripStart=todayStr(), platF='ALL', allMode=false;
 
-    function toggleChecklist(id) {
-      checklist = checklist.map(item => item.id === id ? { ...item, done: !item.done } : item);
-      localStorage.setItem('esk_checklist', JSON.stringify(checklist));
-      renderChecklist();
-    }
+/* ---------- Navigasi ---------- */
+const TITLES={today:['ESK Kreatif','Pembantu post iklan'],plan:['Jadual Post','Susun ikut tarikh & masa'],ai:['Jana Ayat Jualan','Masalah → penyelesaian → tempah'],more:['Tetapan','Footer, peringatan & sandaran']};
+function go(v){
+  view=v;
+  $$('.view').forEach(e=>e.classList.add('hidden'));$('#v-'+v).classList.remove('hidden');
+  $$('nav [data-nav]').forEach(b=>b.classList.toggle('on',b.dataset.nav===v));
+  $('#t-title').textContent=TITLES[v][0];$('#t-sub').textContent=TITLES[v][1];
+  if(v==='today')renderToday();if(v==='plan')renderPlan();if(v==='more')fillSettings();
+  window.scrollTo(0,0);
+}
 
-    function addChecklistItem() {
-      const input = document.getElementById('new-task-input');
-      const text = input.value.trim();
-      if (!text) return;
-      checklist.push({ id: Date.now(), text, done: false });
-      localStorage.setItem('esk_checklist', JSON.stringify(checklist));
-      input.value = '';
-      renderChecklist();
-    }
+/* ---------- Kad Post ---------- */
+const isLate=p=>p.status==='Dijadualkan'&&(p.date<todayStr()||(p.date===todayStr()&&p.time<nowHM()));
+function postCard(p,showDate){
+  const late=isLate(p),cls=p.status==='Selesai'?'don':p.status==='Draf'?'drf':'sch';
+  return `<article class="card post ${p.status==='Selesai'?'done':''}">
+   <div class="row between"><div class="time">${fmt12(p.time)}${showDate?`<small>${fmtDate(p.date)}</small>`:''}</div>
+   <span class="pill ${late?'late':cls}">${late?'⚠️ Lewat':esc(p.status)}</span></div>
+   <div class="tags">${p.platforms.map(x=>`<span class="tag ${esc(x)}">${esc(x)}</span>`).join('')}<span class="tag">${esc(p.category)}</span>${p.staff?`<span class="tag">👤 ${esc(p.staff)}</span>`:''}</div>
+   <h3>${esc(p.title)}</h3>
+   <p class="cap" data-act="cap">${esc(p.caption)}</p>
+   ${p.image?`<img class="th" src="${p.image}" alt="">`:''}
+   <div class="acts">
+     <button class="btn sm" data-act="copy" data-id="${p.id}">📋 Salin</button>
+     <button class="btn sm" data-act="share" data-id="${p.id}">📤 Kongsi</button>
+     <button class="btn sm ${p.status==='Selesai'?'':'grn'}" data-act="toggle" data-id="${p.id}">${p.status==='Selesai'?'↩️ Buka':'✅ Siap'}</button>
+   </div>
+   <div class="mini"><button data-act="edit" data-id="${p.id}">✏️ Edit</button><button data-act="dup" data-id="${p.id}">⎘ Duplikat</button><button class="d" data-act="del" data-id="${p.id}">🗑 Padam</button></div>
+  </article>`;
+}
 
-    function switchTab(mode) {
-      currentViewMode = mode;
-      document.getElementById('nav-utama').className = mode === 'utama' ? 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm transition' : 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition';
-      document.getElementById('nav-semua').className = mode === 'semua' ? 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm transition' : 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition';
-      renderPosts();
-    }
+/* ---------- Hari Ini ---------- */
+const IDEAS=[
+ {t:'Kongsi hasil siap pelanggan',s:'Ahad: tunjuk gambar tempahan yang baru siap',service:'kelab',problem:'kedai'},
+ {t:'Tip: 3 benda nak sedia sebelum tempah baju team',s:'Isnin: kandungan yang membantu, bukan jual terus',service:'korporat',problem:'design'},
+ {t:'Kenapa cetakan pudar? Kaedah mana sesuai?',s:'Selasa: jawab soalan lazim pelanggan',service:'dtf',problem:'pudar'},
+ {t:'Proses cetak dari awal sampai siap',s:'Rabu: video behind-the-scenes + ajak tempah',service:'silk',problem:'kedai'},
+ {t:'Tawaran hujung minggu untuk tempahan kecil',s:'Khamis: tarik pelanggan bajet terhad',service:'dtf',problem:'kuantiti'},
+ {t:'Baju seragam family day / kelab / kelas',s:'Jumaat: sasar penganjur program',service:'kelab',problem:'seragam'},
+ {t:'Slot tempahan minggu depan dibuka',s:'Sabtu: dorong tempah awal',service:'korporat',problem:'lambat'}];
+function renderToday(){
+  const t=todayStr(),hm=nowHM(),list=posts.filter(p=>p.date===t).sort(byTime);
+  const sch=list.filter(p=>p.status==='Dijadualkan'),dn=list.filter(p=>p.status==='Selesai'),dr=list.filter(p=>p.status==='Draf');
+  const h=new Date().getHours(),g=h<12?'Selamat pagi':h<15?'Selamat tengah hari':h<19?'Selamat petang':'Selamat malam';
+  const late=sch.find(p=>p.time<hm),next=late||sch.find(p=>p.time>=hm);
+  let nx='';
+  if(next){
+    const d=mins(next.time)-mins(hm),txt=late?'Sepatutnya dah dipost. Post sekarang!':(d<60?`dalam ${d} minit`:`dalam ${Math.floor(d/60)}j ${d%60}m`);
+    nx=`<div class="card next ${late?'late':''}"><div class="muted" style="color:#cbd5e1">${late?'⚠️ LEWAT':'⏰ POST SETERUSNYA'}</div><div class="big">${fmt12(next.time)}</div><div style="margin:2px 0 10px;color:#e2e8f0">${esc(next.title)} · ${txt}</div>
+    <div class="row"><button class="btn blk" style="color:var(--ink)" data-act="copy" data-id="${next.id}">📋 Salin</button><button class="btn blk" style="color:var(--ink)" data-act="share" data-id="${next.id}">📤 Kongsi</button><button class="btn grn blk" data-act="toggle" data-id="${next.id}">✅ Siap</button></div></div>`;
+  }else if(list.length&&sch.length===0){nx=`<div class="card" style="background:var(--brandbg);border-color:#a7f3d0"><b style="color:#065f46">🎉 Semua post hari ini dah selesai!</b></div>`}
+  const idea=IDEAS[new Date().getDay()];
+  const done=checklist.filter(c=>c.done).length;
+  $('#v-today').innerHTML=`
+   <div style="margin:2px 2px 12px"><div style="font-size:22px;font-weight:800">${g}${settings.staffName?', '+esc(settings.staffName):''} 👋</div><div class="muted">${HARI[new Date().getDay()]}, ${new Date().getDate()} ${BLN[new Date().getMonth()]} ${new Date().getFullYear()}</div></div>
+   <div class="stats"><div class="stat"><b style="color:var(--blue)">${sch.length}</b><span>Belum post</span></div><div class="stat"><b style="color:var(--brand)">${dn.length}</b><span>Selesai</span></div><div class="stat"><b style="color:var(--amber)">${dr.length}</b><span>Draf</span></div></div>
+   ${nx}
+   <div class="sec">Post hari ini</div>
+   ${list.length?list.map(p=>postCard(p)).join(''):`<div class="empty">Belum ada post untuk hari ini.<br><br><button class="btn pri" data-act="newpost">+ Tambah post</button></div>`}
+   <div class="sec">💡 Idea post hari ini</div>
+   <div class="card"><button class="idea" data-act="idea"><b>${idea.t}</b><span>${idea.s} · ketik untuk jana ayat</span></button></div>
+   <div class="sec">✅ Senarai semak (${done}/${checklist.length})</div>
+   <div class="card">${checklist.map(c=>`<label class="check ${c.done?'d':''}"><input type="checkbox" ${c.done?'checked':''} data-act="chk" data-id="${c.id}"><span>${esc(c.text)}</span></label>`).join('')}
+    <div class="row" style="margin-top:10px"><input id="new-task" placeholder="Tambah tugasan..."><button class="btn sm" data-act="addtask">+</button></div></div>`;
+}
 
-    function setPlatformFilter(platform) {
-      currentPlatformFilter = platform;
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.className = btn.dataset.filter === platform ? 'filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white transition' : 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 transition';
-      });
-      renderPosts();
-    }
+/* ---------- Jadual ---------- */
+function renderPlan(){
+  const d0=pdate(stripStart);$('#plan-month').textContent=`${BLN[d0.getMonth()]} ${d0.getFullYear()}`;
+  let s='';for(let i=0;i<7;i++){const ds=addDays(stripStart,i),d=pdate(ds),n=posts.filter(p=>p.date===ds).length;
+    s+=`<button class="day ${ds===sel&&!allMode?'on':''}" data-act="day" data-d="${ds}"><small>${HARI[d.getDay()].slice(0,3)}</small><b>${d.getDate()}</b><i>${n?'●'.repeat(Math.min(n,3)):''}</i></button>`}
+  $('#strip').innerHTML=s;
+  const F=['ALL','Facebook','Instagram','TikTok'];
+  $('#plan-filters').innerHTML=`<button class="chip ${allMode?'on':''}" data-act="all">📅 Semua akan datang</button>`+F.map(f=>`<button class="chip ${platF===f?'on':''}" data-act="pf" data-f="${f}">${f==='ALL'?'Semua platform':f}</button>`).join('');
+  let list=posts.filter(p=>(platF==='ALL'||p.platforms.includes(platF))&&(allMode?(p.date>=todayStr()||isLate(p)):p.date===sel)).sort(byTime);
+  $('#plan-list').innerHTML=(allMode?'':`<div class="sec" style="margin-top:4px">${fmtDate(sel)}${sel===todayStr()?' · Hari ini':''}</div>`)+(list.length?list.map(p=>postCard(p,allMode)).join(''):`<div class="empty">Tiada post${allMode?'':' pada tarikh ini'}.<br><br><button class="btn pri" data-act="newpost">+ Tambah post</button></div>`);
+}
 
-    function renderPosts() {
-      const selectedDate = document.getElementById('filter-date').value;
-      const selectedCategory = document.getElementById('filter-category').value;
-      const container = document.getElementById('posts-container');
+/* ---------- Sheet Post ---------- */
+let editing=null,sheetImg='',sheetAP='PM';
+function buildTimePicker(){
+  $('#ps-h').innerHTML=Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');
+  $('#ps-m').innerHTML=Array.from({length:12},(_,i)=>`<option value="${i*5}">${pad(i*5)}</option>`).join('');
+  $('#ps-peak').innerHTML=['08:30','13:00','20:30','10:00','17:30'].map(t=>`<button type="button" class="chip" data-act="peak" data-t="${t}">${fmt12(t)}</button>`).join('')+`<button type="button" class="chip" data-act="peak" data-t="now">Sekarang</button>`;
+}
+function setTime(t){
+  const [h,m]=t.split(':').map(Number);
+  if(![...$('#ps-m').options].some(o=>+o.value===m))$('#ps-m').add(new Option(pad(m),m));
+  $('#ps-h').value=h%12||12;$('#ps-m').value=m;setAP(h>=12?'PM':'AM');
+}
+function setAP(v){sheetAP=v;$$('#ps-ap button').forEach(b=>b.classList.toggle('on',b.dataset.v===v))}
+function getTime(){let h=(+$('#ps-h').value)%12;if(sheetAP==='PM')h+=12;return `${pad(h)}:${pad(+$('#ps-m').value)}`}
+function nextPeak(){const hm=nowHM(),t=todayStr(),pk=['08:30','13:00','20:30'],n=pk.find(x=>x>hm);return n?{date:t,time:n}:{date:addDays(t,1),time:'08:30'}}
+function setPlats(a){$$('#ps-plat .chip').forEach(c=>c.classList.toggle('on',a.includes(c.dataset.p)))}
+function openSheet(pre={}){
+  editing=pre.id||null;sheetImg=pre.image||'';
+  const slot=nextPeak();
+  $('#sh-title').textContent=editing?'Edit Post':'Post Baru';
+  setPlats(pre.platforms||['Facebook','Instagram']);
+  $('#ps-date').value=pre.date||(view==='plan'&&sel>=todayStr()?sel:slot.date);
+  setTime(pre.time||slot.time);
+  $('#ps-title').value=pre.title||'';$('#ps-cap').value=pre.caption||'';
+  $('#ps-cat').value=pre.category||'Servis Printing';$('#ps-status').value=pre.status||'Dijadualkan';
+  $('#ps-img-t').textContent=sheetImg?'✅ Gambar dipilih (ketik untuk tukar)':'📷 Tambah gambar';
+  $('#ps-file').value='';capCount();
+  $('#ov-post').classList.add('show');$('.sheet').scrollTop=0;
+}
+const closeSheet=()=>$('#ov-post').classList.remove('show');
+function capCount(){const n=$('#ps-cap').value.length;$('#ps-count').textContent=`${n} aksara · Instagram & TikTok had 2,200`;$('#ps-count').style.color=n>2200?'var(--red)':''}
+function savePost(){
+  const plats=$$('#ps-plat .chip.on').map(c=>c.dataset.p),title=$('#ps-title').value.trim(),cap=$('#ps-cap').value.trim(),date=$('#ps-date').value;
+  if(!plats.length)return toast('Pilih sekurang-kurangnya satu platform');
+  if(!date)return toast('Pilih tarikh');
+  if(!title)return toast('Isi tajuk / idea hook');
+  if(!cap)return toast('Isi ayat iklan');
+  const o={date,time:getTime(),platforms:plats,category:$('#ps-cat').value,status:$('#ps-status').value,title,caption:cap,image:sheetImg};
+  if(editing){const i=posts.findIndex(p=>p.id===editing);if(i>-1)posts[i]={...posts[i],...o}}
+  else posts.push({id:'post-'+Date.now(),staff:settings.staffName,...o});
+  if(!savePosts())return;
+  sel=date;stripStart=date<stripStart||date>addDays(stripStart,6)?date:stripStart;
+  closeSheet();toast('✅ Disimpan · '+fmtDate(date)+' '+fmt12(o.time));
+  view==='plan'?renderPlan():view==='today'?renderToday():go('plan');
+}
 
-      let filtered = posts.filter(p => {
-        const matchDate = currentViewMode === 'semua' ? true : p.date === selectedDate;
-        const matchPlatform = currentPlatformFilter === 'ALL' ? true : p.platforms.includes(currentPlatformFilter);
-        const matchCategory = selectedCategory === 'ALL' ? true : p.category === selectedCategory;
-        return matchDate && matchPlatform && matchCategory;
-      });
+/* ---------- Penjana AI ---------- */
+const SERVICES=[
+ {id:'korporat',label:'Baju Korporat',icon:'🏢',name:'baju korporat / uniform syarikat',aud:'pemilik bisnes, pengurus dan HR',show:'baju yang siap dicetak'},
+ {id:'kelab',label:'Kelab / Family Day',icon:'🎉',name:'baju kelab, family day & program',aud:'penganjur program, kelab dan keluarga',show:'baju yang siap dicetak'},
+ {id:'kafe',label:'Apron & Kafe',icon:'☕',name:'apron dan uniform kafe / kedai makan',aud:'pemilik kafe, kedai makan dan barbershop',show:'apron yang siap dicetak'},
+ {id:'jersi',label:'Jersi Sukan',icon:'⚽',name:'jersi sukan pasukan',aud:'pasukan sukan, sekolah dan komuniti',show:'jersi yang siap dicetak'},
+ {id:'dtf',label:'Cetak DTF',icon:'🎨',name:'cetakan DTF (kuantiti kecil pun boleh)',aud:'sesiapa yang nak cetak sikit atau design berwarna penuh',show:'proses cetak DTF & hasil siap'},
+ {id:'silk',label:'Silk Screen Pukal',icon:'📦',name:'cetakan silk screen untuk tempahan pukal',aud:'tempahan pukal yang mahu kos seunit lebih jimat',show:'proses silk screen & hasil siap'},
+ {id:'lain',label:'Lain-lain',icon:'✨',name:'tempahan printing',aud:'sesiapa yang nak tempah cetakan',show:'proses cetak & hasil siap'}];
+const PROBLEMS={
+ lambat:{l:'Takut lambat siap',
+  h:{kel:['Tempah baju, last minit baru tau tak sempat siap? Jange jadi macam tu 😮‍💨','Majlis dah dekat, baju belum siap lagi? Kita settle awal-awal.'],
+     std:['Tempah baju, last minit baru tahu tak sempat siap? Tak perlu risau lagi.','Majlis dah dekat tapi baju belum siap? Jom selesaikan awal.'],
+     for:['Bimbang tempahan pakaian lewat disiapkan sebelum majlis anda?','Tarikh majlis semakin hampir. Sudahkah pakaian anda ditempah?']},
+  pain:'Paling stres bila tarikh siap tak jelas dan nak tanya pun lambat dibalas.',
+  fix:t=>`Di ESK, tarikh siap dimaklumkan awal${t?` (anggaran ${t})`:''} sebelum anda buat keputusan, jadi anda boleh rancang dengan tenang.`},
+ design:{l:'Tak tahu nak design',
+  h:{kel:['Ada idea nak buat baju, tapi tak tahu nak susun design macam mana? Senang je 👇','Logo ada, tapi tak pasti kemas ke tak atas baju? Hantar je, kita tolong tengok.'],
+     std:['Ada idea nak buat baju tapi tak tahu mula dari mana?','Logo dah ada tapi tak pasti nampak kemas atas baju? Hantar je kepada kami.'],
+     for:['Mempunyai idea reka bentuk tetapi tidak pasti cara menyusunnya?','Perlukan bantuan menyediakan reka bentuk sebelum dicetak?']},
+  pain:'Ramai tangguh tempahan sebab ingat design kena siap sempurna dulu.',
+  fix:()=>'Tak perlu siap. Hantar logo, gambar rujukan atau idea kasar di WhatsApp, kami bantu semak supaya cetakan nampak kemas sebelum cetak.'},
+ kuantiti:{l:'Kuantiti sikit',
+  h:{kel:['Nak buat 5-10 helai je, tapi kedai lain suruh minimum banyak? Tanya kami dulu 👌','Sikit pun boleh, ramai pun boleh. Tanya je dulu.'],
+     std:['Nak cetak sikit je tapi kedai lain letak minimum order tinggi?','Kuantiti kecil atau pukal, tanya dulu, tak rugi apa.'],
+     for:['Bimbang kuantiti tempahan anda terlalu sedikit untuk dicetak?','Kuantiti kecil atau pukal, kami cadangkan kaedah yang paling sesuai.']},
+  pain:'Banyak kedai letak minimum order tinggi, last-last tak jadi tempah.',
+  fix:()=>'Beritahu berapa helai anda perlukan. Kami cadangkan kaedah paling jimat (DTF untuk kuantiti kecil, silk screen untuk pukal).'},
+ harga:{l:'Bajet terhad',
+  h:{kel:['Bajet tak banyak tapi nak baju nampak pro? Ada cara 💡','Takut harga naik bila dah mula? Minta sebut harga dulu.'],
+     std:['Bajet terhad tapi nak baju nampak profesional?','Takut kos tambahan bila dah mula tempah? Minta sebut harga dulu.'],
+     for:['Mencari pilihan cetakan yang sesuai dengan bajet anda?','Ingin mengetahui jumlah kos penuh sebelum membuat tempahan?']},
+  pain:'Ramai risau kos berubah-ubah selepas bayar deposit.',
+  fix:()=>'Beritahu bajet & kuantiti, kami cadangkan pilihan yang sesuai dan sebut harga dahulu supaya anda tahu jumlahnya sebelum tempah.'},
+ pudar:{l:'Cetakan pudar / pecah',
+  h:{kel:['Baju baru basuh dua tiga kali, cetakan dah pecah? Rugi doh 😩','Nak cetakan tahan basuh? Pilih kaedah yang betul dari awal.'],
+     std:['Baju baru beberapa kali basuh, cetakan dah pecah atau pudar?','Nak cetakan yang tahan lama? Kaedah cetak kena ikut jenis kain.'],
+     for:['Pernah mengalami cetakan pakaian pudar atau tertanggal selepas beberapa kali basuhan?','Ketahanan cetakan bergantung pada kaedah dan jenis kain yang dipilih.']},
+  pain:'Duit dah keluar, tapi baju tak tahan lama. Memang menyakitkan hati.',
+  fix:()=>'Kami cadangkan kaedah cetak ikut jenis kain & kegunaan (DTF atau silk screen) supaya hasilnya lebih tahan basuh.'},
+ kedai:{l:'Susah cari kedai dipercayai',
+  h:{kel:['Dah cuba banyak kedai tapi balas lambat atau hilang senyap? 😤','Nak kedai yang balas WhatsApp & jelas dari awal? Ni dia.'],
+     std:['Dah cuba banyak kedai tapi mesej lambat berbalas atau hilang senyap?','Nak kedai printing yang balas laju dan jelas dari awal?'],
+     for:['Mencari pembekal cetakan yang responsif dan telus?','Perlukan khidmat cetakan dengan komunikasi yang jelas dari awal hingga siap?']},
+  pain:'Mesej tak berbalas dan maklumat tak jelas buat tempahan jadi serabut.',
+  fix:()=>'Mesej kami di WhatsApp. Semua butiran (design, harga, tarikh siap) dijelaskan terus supaya anda tahu apa yang berlaku.'},
+ seragam:{l:'Susah urus baju satu team',
+  h:{kel:['Nak baju seragam satu team tapi pening nak kumpul saiz & nama? 🤯','Kelas, kelab, syarikat, nak baju sama, jange la serabut.'],
+     std:['Nak baju seragam satu team tapi pening kumpul saiz & nama?','Kelas, kelab atau syarikat, nak baju sama tanpa serabut.'],
+     for:['Menguruskan tempahan pakaian seragam untuk pasukan anda?','Perlukan pakaian seragam untuk organisasi atau program anda?']},
+  pain:'Kumpul saiz, nama dan nombor ramai orang memang memenatkan.',
+  fix:()=>'Hantar senarai nama & saiz di WhatsApp, kami susun dan terangkan langkah seterusnya supaya anda tak perlu uruskan semuanya sendiri.'}};
+const URG={none:'',slot:'⏳ Slot tempahan minggu ini terhad.',today:'🔥 Tawaran tamat hari ini.',weekend:'🔥 Tawaran sehingga hujung minggu ini.'};
+const CTA={kel:'Jange tunggu lama. Mesej kami sekarang, bagi tau idea & berapa helai 👇',std:'Jangan tunggu lama. Mesej kami sekarang, beritahu idea & kuantiti anda 👇',for:'Hubungi kami melalui WhatsApp untuk mendapatkan sebut harga 👇'};
+let ai={service:'korporat',problem:'lambat',tone:'kel',seed:0,img:''};
 
-      document.getElementById('stat-total').textContent = filtered.length;
-      document.getElementById('stat-scheduled').textContent = filtered.filter(p => p.status === 'Dijadualkan').length;
-      document.getElementById('stat-published').textContent = filtered.filter(p => p.status === 'Selesai').length;
-      document.getElementById('stat-draft').textContent = filtered.filter(p => p.status === 'Draf').length;
+function renderChips(){
+  $('#g-service').innerHTML=SERVICES.map(s=>`<button class="chip ${ai.service===s.id?'on':''}" data-k="service" data-v="${s.id}">${s.icon} ${s.label}</button>`).join('');
+  $('#g-problem').innerHTML=Object.entries(PROBLEMS).map(([k,p])=>`<button class="chip ${ai.problem===k?'on':''}" data-k="problem" data-v="${k}">${p.l}</button>`).join('');
+  $$('#g-tone button').forEach(b=>b.classList.toggle('on',b.dataset.v===ai.tone));
+}
+function waBlock(){const ph=settings.waPhone.replace(/\D/g,''),tx=settings.waText?'/'+encodeURIComponent(settings.waText):'';return `${settings.waCta}\nhttps://wasap.my/${ph}${tx}`}
+function gen(bump){
+  if(bump)ai.seed++;
+  const S=SERVICES.find(x=>x.id===ai.service),P=PROBLEMS[ai.problem],T=ai.tone;
+  const prod=$('#ai-prod').value.trim(),tmp=$('#ai-time').value.trim(),off=$('#ai-offer').value.trim(),urg=URG[$('#ai-urg').value];
+  const sname=(S.id==='lain'&&prod)?prod:S.name;
+  const hook=P.h[T][ai.seed%P.h[T].length],fix=P.fix(tmp);
+  const wa=$('#ai-wa').checked?waBlock():'',tags=$('#ai-tags').checked?settings.hashtags:'';
+  const offBlock=[off?`🎁 ${off}`:'',urg].filter(Boolean).join('\n');
+  const J=a=>a.filter(Boolean).join('\n\n');
+  const num=T==='for'?['1.','2.','3.']:['1️⃣','2️⃣','3️⃣'];
+  $('#o-wa').value=J([hook,fix,offBlock,wa]);
+  $('#o-reel').value=J([hook,fix,offBlock,$('#ai-wa').checked?`💬 WhatsApp: wasap.my/${settings.waPhone.replace(/\D/g,'')}`:'',tags]);
+  $('#o-vid').value=`🎬 IDEA VIDEO 15 SAAT (menegak 9:16)\n\n0–3 saat · Teks besar atas skrin:\n"${hook}"\n\n3–10 saat · Tunjuk ${prod||S.show}. Teks/suara:\n"${fix}"\n\n10–15 saat · ${off?`Teks: "${off}". `:''}Tunjuk nombor WhatsApp dan ajak penonton mesej.\n\nTip: 3 saat pertama paling penting. Mula dengan masalah, bukan nama kedai.`;
+  $('#o-main').value=J([
+    hook,P.pain,fix,
+    `Senang je nak tempah ${sname}:\n${num[0]} Hantar idea / logo / gambar rujukan di WhatsApp\n${num[1]} Kami beri sebut harga${tmp?` & tempoh siap (${tmp})`:''}\n${num[2]} Anda sahkan design, kami terus cetak`,
+    `Sesuai untuk ${S.aud}.`,
+    prod?`📌 Contoh terkini: ${prod}`:'',
+    offBlock,CTA[T],wa,tags]);
+  $('#ai-results').classList.remove('hidden');
+  $$('#ai-results textarea').forEach(autosize);countMain();
+  if(bump!==undefined)$('#ai-results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function autosize(el){el.style.height='auto';el.style.height=Math.max(el.scrollHeight+4,el.id==='o-main'?260:70)+'px'}
+function countMain(){$('#o-count').textContent=`${$('#o-main').value.length} aksara`}
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="bg-white border border-dashed border-slate-300 rounded-2xl p-8 text-center text-xs text-slate-500">Tiada jadual iklan buat masa ini.</div>`;
-        return;
-      }
+/* ---------- Tetapan ---------- */
+function fillSettings(){
+  $('#st-staff').value=settings.staffName;$('#st-phone').value=settings.waPhone;$('#st-cta').value=settings.waCta;
+  $('#st-text').value=settings.waText;$('#st-tags').value=settings.hashtags;$('#st-remind').checked=!!settings.remind;
+}
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('#btn-install').classList.remove('hidden')});
+if(matchMedia('(display-mode: standalone)').matches||navigator.standalone)$('#install-card').classList.add('hidden');
 
-      container.innerHTML = filtered.map(post => `
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-extrabold bg-slate-100 px-2.5 py-1 rounded-lg">${post.time}</span>
-            <span class="text-xs font-bold text-slate-600">${post.status}</span>
-          </div>
-          <h3 class="font-extrabold text-slate-900 text-sm mb-1">${post.title}</h3>
-          <p class="text-xs text-slate-700 whitespace-pre-line mb-3">${post.caption}</p>
-          <div class="flex justify-end gap-2">
-            <button onclick="deletePost('${post.id}')" class="text-xs text-red-500 hover:underline">Padam</button>
-          </div>
-        </div>
-      `).join('');
-    }
+/* ---------- Peringatan ---------- */
+function notify(p){
+  const msg=`${fmt12(p.time)} · ${p.title}`;toast('⏰ Masa post: '+msg);
+  try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}
+  try{if('Notification' in window&&Notification.permission==='granted'){
+    if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification('Masa untuk post iklan',{body:msg,icon:'icon-192.png',tag:p.id}));
+    else new Notification('Masa untuk post iklan',{body:msg});}}catch(e){}
+}
+function tick(){
+  if(settings.remind){
+    const hm=nowHM(),fired=LS('esk_fired',{});let ch=false;
+    posts.filter(p=>p.date===todayStr()&&p.status==='Dijadualkan'&&p.time<=hm&&mins(hm)-mins(p.time)<=60&&!fired[p.id]).forEach(p=>{fired[p.id]=1;ch=true;notify(p)});
+    if(ch)SV('esk_fired',fired);
+  }
+  $('#t-now').textContent=fmt12(nowHM());
+  const ae=document.activeElement;
+  if(view==='today'&&!(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)))renderToday();
+}
 
-    function deletePost(id) {
-      posts = posts.filter(p => p.id !== id);
-      localStorage.setItem('esk_posts', JSON.stringify(posts));
-      renderPosts();
-    }
+/* ---------- Events ---------- */
+document.addEventListener('click',async e=>{
+  const kb=e.target.closest('[data-k]');
+  if(kb){ai[kb.dataset.k]=kb.dataset.v;renderChips();return}
+  const nv=e.target.closest('[data-nav]');if(nv){go(nv.dataset.nav);return}
+  const pl=e.target.closest('#ps-plat .chip');if(pl){pl.classList.toggle('on');return}
+  const ap=e.target.closest('#ps-ap button');if(ap){setAP(ap.dataset.v);return}
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,id=b.dataset.id,p=id&&posts.find(x=>x.id===id);
+  const rerender=()=>{view==='plan'?renderPlan():renderToday()};
+  switch(a){
+   case 'cap':b.classList.toggle('open');break;
+   case 'newpost':openSheet();break;
+   case 'closesheet':closeSheet();break;
+   case 'savepost':savePost();break;
+   case 'peak':{const t=b.dataset.t==='now'?nowHM():b.dataset.t;const m=Math.round(mins(t)/5)*5;setTime(`${pad(Math.floor(m/60)%24)}:${pad(m%60)}`);break}
+   case 'addtags':{const c=$('#ps-cap');if(!c.value.includes(settings.hashtags)){c.value=(c.value?c.value+'\n\n':'')+settings.hashtags;capCount()}else toast('Hashtag sudah ada');break}
+   case 'addwa':{const c=$('#ps-cap');if(!c.value.includes('wasap.my/')){c.value=(c.value?c.value+'\n\n':'')+waBlock();capCount()}else toast('Link WhatsApp sudah ada');break}
+   case 'copy':if(p)toast(await copyText(p.caption)?'📋 Disalin. Tampal di app media sosial':'Gagal salin');break;
+   case 'share':if(p)shareText(p.caption,p.image);break;
+   case 'toggle':if(p){p.status=p.status==='Selesai'?'Dijadualkan':'Selesai';savePosts();rerender();toast(p.status==='Selesai'?'✅ Ditanda siap':'Dibuka semula')}break;
+   case 'edit':if(p)openSheet(p);break;
+   case 'dup':if(p){openSheet({...p,id:null,status:'Draf',date:addDays(p.date>=todayStr()?p.date:todayStr(),1)});toast('Salinan dibuat. Ubah tarikh/masa & simpan')}break;
+   case 'del':if(p&&confirm(`Padam post "${p.title}"?`)){posts=posts.filter(x=>x.id!==id);savePosts();rerender();toast('Dipadam')}break;
+   case 'chk':checklist=checklist.map(c=>c.id==id?{...c,done:!c.done}:c);SV('esk_checklist',checklist);renderToday();break;
+   case 'addtask':{const v=$('#new-task').value.trim();if(v){checklist.push({id:Date.now(),text:v,done:false});SV('esk_checklist',checklist);renderToday()}break}
+   case 'wk':stripStart=addDays(stripStart,+b.dataset.n);renderPlan();break;
+   case 'day':sel=b.dataset.d;allMode=false;renderPlan();break;
+   case 'all':allMode=!allMode;renderPlan();break;
+   case 'pf':platF=b.dataset.f;renderPlan();break;
+   case 'idea':{const i=IDEAS[new Date().getDay()];ai.service=i.service;ai.problem=i.problem;renderChips();go('ai');toast('Pilihan diisi. Tekan Jana Ayat Iklan');break}
+   case 'gen':gen(0);ai.seed=ai.seed;break;
+   case 'regen':gen(1);break;
+   case 'ocopy':{const el=$('#'+b.dataset.t);toast(await copyText(el.value)?'📋 Disalin':'Gagal salin');break}
+   case 'oshare':shareText($('#'+b.dataset.t).value,ai.img);break;
+   case 'tosched':{const S=SERVICES.find(x=>x.id===ai.service),P=PROBLEMS[ai.problem];
+      openSheet({title:`${$('#ai-prod').value.trim()||S.label}: ${P.l}`,caption:$('#o-main').value,image:ai.img});break}
+   case 'savesettings':{
+      const ph=$('#st-phone').value.replace(/\D/g,'');if(!ph)return toast('Isi nombor WhatsApp');
+      settings={...settings,staffName:$('#st-staff').value.trim(),waPhone:ph,waCta:$('#st-cta').value.trim(),waText:$('#st-text').value.trim(),hashtags:$('#st-tags').value.trim()};
+      SV('esk_settings',settings);toast('✅ Tetapan disimpan');break}
+   case 'install':if(deferredInstall){deferredInstall.prompt();deferredInstall=null;b.classList.add('hidden')}break;
+   case 'export':{const blob=new Blob([JSON.stringify({v:1,settings,checklist,posts},null,1)],{type:'application/json'});const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download=`esk-kreatif-${todayStr()}.json`;l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);break}
+   case 'reset':if(confirm('Padam SEMUA post dan tetapan dalam handphone ini?')){['esk_settings','esk_checklist','esk_posts','esk_fired','esk_check_date'].forEach(k=>localStorage.removeItem(k));location.reload()}break;
+  }
+});
+$('#ps-cap').addEventListener('input',capCount);
+$('#o-main').addEventListener('input',e=>{countMain();autosize(e.target)});
+$('#ov-post').addEventListener('click',e=>{if(e.target.id==='ov-post')closeSheet()});
+$('#ai-file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{ai.img=await compress(f);$('#ai-up-img').src=ai.img;$('#ai-up-img').classList.remove('hidden');$('#ai-up-t').classList.add('hidden');toast('Gambar dimuat naik')}catch(x){toast('Gambar tak dapat dibaca')}});
+$('#ps-file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{sheetImg=await compress(f);$('#ps-img-t').textContent='✅ Gambar dipilih (ketik untuk tukar)'}catch(x){toast('Gambar tak dapat dibaca')}});
+$('#imp-file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{const d=JSON.parse(await f.text());if(!Array.isArray(d.posts))throw 0;
+    if(!confirm(`Import ${d.posts.length} post? Data semasa akan diganti.`))return;
+    posts=d.posts;settings={...DEF_SET,...(d.settings||{})};checklist=d.checklist||DEF_CHECK;
+    SV('esk_posts',posts);SV('esk_settings',settings);SV('esk_checklist',checklist);fillSettings();toast('✅ Import berjaya')}catch(x){toast('Fail sandaran tidak sah')}});
+$('#st-remind').addEventListener('change',async e=>{
+  settings.remind=e.target.checked;SV('esk_settings',settings);
+  if(settings.remind&&'Notification' in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch(x){}}
+  toast(settings.remind?'🔔 Peringatan dihidupkan':'Peringatan dimatikan')});
 
-    function handleAIImageUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        currentAIImageBase64 = ev.target.result;
-        document.getElementById('ai-preview-img').src = currentAIImageBase64;
-        document.getElementById('ai-preview-img').classList.remove('hidden');
-        document.getElementById('ai-upload-placeholder').classList.add('hidden');
-        if(!document.getElementById('ai-context-input').value) {
-          document.getElementById('ai-context-input').value = file.name.replace(/\.[^/.]+$/, '');
-        }
-        showToast('Gambar dimuat naik!');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function setAITone(tone) {
-      currentAITone = tone;
-      document.getElementById('tone-kelantan').className = tone === 'kelantan' ? 'py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1 transition' : 'py-1.5 px-3 rounded-lg text-xs font-semibold text-slate-600 transition';
-      document.getElementById('tone-formal').className = tone === 'formal' ? 'py-1.5 px-3 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm flex items-center justify-center gap-1 transition' : 'py-1.5 px-3 rounded-lg text-xs font-semibold text-slate-600 transition';
-    }
-
-    // --- JANA SEMUA FORMAT AI SEKALIGUS (BEBAS PERKATAAN STESEN) ---
-    function generateAICaptionsMulti() {
-      const context = document.getElementById('ai-context-input').value.trim() || 'Servis cetakan & pakaian';
-      
-      let waText = '';
-      let reelText = '';
-      let mainText = '';
-
-      if (currentAITone === 'kelantan') {
-        waText = `🔥 Beres siap batch ${context} hari ni! Comel rupa, puas hati harga. Jom roger team kita kalau nak tempah cepat!\n\n${getWhatsAppBlock()}`;
-        reelText = `👀 Tengoklah hasil ${context} ni! Kemaih & tajam molek cetakan dia. Nak buat untuk team aok juga? Tekan link di bio! 🚀\n\n${getWhatsAppBlock()}`;
-        mainText = `🔥 BERES SIAP TEMPAHAN HARI NI! BOSS NAK BUAT UNIFORM JUGA KE? 🔥\n\nTengoklah tu, kemaih molek hasil kerja team kita siapkan batch (${context}). Warna naik comel atas kain, tajam tak pecah langsung!\n\nBagi saing-saing yang berniaga kedai makan, kafe, barbershop, atau nak buat baju family day & kelab, tak payah pening kepala cari kedai jauh. Kedai kita di Ketereh sedia terima tempahan pukal, comel rupa, puas hati harga!\n\n${getWhatsAppBlock()}\n\n${appSettings.hashtags}`;
-      } else {
-        waText = `✨ Kemaskini Tempahan: ${context} sudah siap! Hubungi kami segera untuk sebut harga.\n\n${getWhatsAppBlock()}`;
-        reelText = `💡 Proses penghasilan ${context} berkualiti tinggi di ESK Printing. Tempah sekarang untuk pasukan anda!\n\n${getWhatsAppBlock()}`;
-        mainText = `✨ PERKHIDMATAN PERCETAKAN & PAKAIAN BERKUALITI TINGGI ✨\n\nPaparan proses pengeluaran bagi tempahan (${context}) oleh pasukan produksi Empayar S Printing. Kami memastikan setiap cetakan mempunyai ketajaman warna yang konsisten dan tahan lama.\n\nSesuai untuk uniform perniagaan, korporat, dan acara rasmi.\n\n${getWhatsAppBlock()}\n\n${appSettings.hashtags}`;
-      }
-
-      document.getElementById('ai-out-wa').value = waText;
-      document.getElementById('ai-out-reel').value = reelText;
-      document.getElementById('ai-out-main').value = mainText;
-      showToast('Semua format kapsyen AI berjaya dijana!');
-    }
-
-    function copySpecificOutput(elementId) {
-      const text = document.getElementById(elementId).value;
-      if (!text) return showToast('Tiada teks untuk disalin.');
-      navigator.clipboard.writeText(text).then(() => showToast('Berjaya disalin!'));
-    }
-
-    function appendSavedHashtagsToMain() {
-      const el = document.getElementById('ai-out-main');
-      if (el.value.includes(appSettings.hashtags)) return showToast('Hashtag sudah ada!');
-      el.value = el.value ? `${el.value}\n\n${appSettings.hashtags}` : appSettings.hashtags;
-      showToast('Hashtag ditambah ke post utama!');
-    }
-
-    function appendSavedWhatsAppToMain() {
-      const el = document.getElementById('ai-out-main');
-      const waBlock = getWhatsAppBlock();
-      if (el.value.includes('wasap.my/')) return showToast('Link WhatsApp sudah ada!');
-      el.value = el.value ? `${el.value}\n\n${waBlock}` : waBlock;
-      showToast('Link WhatsApp ditambah ke post utama!');
-    }
-
-    function sendMainCaptionToModal() {
-      const caption = document.getElementById('ai-out-main').value.trim();
-      if (!caption) return showToast('Sila jana kapsyen dahulu.');
-      openPostModal({
-        title: 'Kempen Baru dari AI',
-        caption: caption,
-        image: currentAIImageBase64
-      });
-    }
-
-    function openPostModal(prefill = null) {
-      document.getElementById('post-form').reset();
-      document.getElementById('edit-post-id').value = '';
-      document.getElementById('post-date').value = TODAY;
-      if (prefill) {
-        document.getElementById('post-title').value = prefill.title || '';
-        document.getElementById('post-caption').value = prefill.caption || '';
-      }
-      document.getElementById('post-modal').classList.remove('hidden');
-    }
-
-    function closePostModal() {
-      document.getElementById('post-modal').classList.add('hidden');
-    }
-
-    function savePost(e) {
-      e.preventDefault();
-      const checkedPlatforms = Array.from(document.querySelectorAll('input[name="platform"]:checked')).map(cb => cb.value);
-      const postObj = {
-        id: 'post-' + Date.now(),
-        date: document.getElementById('post-date').value,
-        time: document.getElementById('post-time').value,
-        platforms: checkedPlatforms,
-        category: document.getElementById('post-category').value,
-        status: document.getElementById('post-status').value,
-        title: document.getElementById('post-title').value.trim(),
-        caption: document.getElementById('post-caption').value.trim()
-      };
-      posts.push(postObj);
-      localStorage.setItem('esk_posts', JSON.stringify(posts));
-      closePostModal();
-      renderPosts();
-      showToast('Jadual berjaya disimpan!');
-    }
-
-    function openSettingsModal() {
-      document.getElementById('setting-wa-phone').value = appSettings.waPhone;
-      document.getElementById('setting-wa-cta').value = appSettings.waCta;
-      document.getElementById('setting-wa-text').value = appSettings.waText;
-      document.getElementById('setting-hashtags').value = appSettings.hashtags;
-      document.getElementById('settings-modal').classList.remove('hidden');
-    }
-
-    function closeSettingsModal() {
-      document.getElementById('settings-modal').classList.add('hidden');
-    }
-
-    function saveFooterSettings(e) {
-      e.preventDefault();
-      appSettings.waPhone = document.getElementById('setting-wa-phone').value.replace(/[^0-9]/g, '');
-      appSettings.waCta = document.getElementById('setting-wa-cta').value.trim();
-      appSettings.waText = document.getElementById('setting-wa-text').value.trim();
-      appSettings.hashtags = document.getElementById('setting-hashtags').value.trim();
-      localStorage.setItem('esk_settings', JSON.stringify(appSettings));
-      updateSettingsUI();
-      closeSettingsModal();
-      showToast('Tetapan dikemas kini!');
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-msg').textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
-      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
-    }
-  </script>
+/* ---------- Mula ---------- */
+buildTimePicker();renderChips();tick();go('today');
+setInterval(tick,30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
 </body>
 </html>
