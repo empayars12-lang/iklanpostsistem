@@ -20,11 +20,11 @@ export default {
     try {
       const body = await request.json();
 
-      // Ambil API Key secara selamat daripada Environment Variable Cloudflare
+      // Ambil API Key dari Environment Variable Cloudflare
       const GEMINI_API_KEY = env.GEMINI_API_KEY;
 
       if (!GEMINI_API_KEY) {
-        throw new Error("GEMINI_API_KEY tidak dijumpai dalam pembolehubah Cloudflare.");
+        throw new Error("GEMINI_API_KEY belum ditetapkan di Cloudflare Settings.");
       }
 
       const service = body.service || "Cetak Baju";
@@ -56,7 +56,8 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         }];
       }
 
-      const model = "gemini-1.5-flash";
+      // Gunakan model gemini-2.0-flash yang disokong kunci baharu
+      const model = "gemini-2.0-flash";
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
