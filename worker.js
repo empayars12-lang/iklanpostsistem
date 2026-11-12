@@ -1,4 +1,3 @@
-// Cloudflare Worker: Gemini 1.5 Flash (Kod Lengkap & Stabil)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -20,58 +19,61 @@ export default {
 
     try {
       const body = await request.json();
-      
-      // Kunci API Google AI Studio anda
-      const GEMINI_API_KEY = "AQ.Ab8RN6IyKwymarosg2M7U5acW55OdP7_v7MtHaUj0oUnHqTI8w";
+
+      // Key AQ. dari Google AI Studio (format baru)
+      const GEMINI_API_KEY = "AQ.Ab8RN6JWeVXwq9-EZTVNxJcQSu7s5SrNZaKAfNERtOdQXWMAxw";
+
+      const service = body.service || "Cetak Baju";
+      const problem = body.problem || "Mahu buat baju custom";
+      const product = body.product || "";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
-Servis: ${body.service || 'Cetak Baju'}
-Masalah Pelanggan: ${body.problem || 'Mahu buat baju custom'}
-${body.product ? `Produk: ${body.product}` : ''}
 
-Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju.`;
+Servis: ${service}
+Masalah Pelanggan: ${problem}
+${product ? `Produk: ${product}` : ""}
 
-      let contents = [];
+Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju. Guna bahasa Melayu yang santai dan persuasif.`;
+
+      let contents = [{ parts: [{ text: promptText }] }];
 
       if (body.image) {
-        const base64Data = body.image.split(',')[1] || body.image;
-        contents = [
-          {
-            parts: [
-              { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (seperti warna atau jenis cetakan) ke dalam ayat iklan." },
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: base64Data
-                }
+        const base64Data = body.image.split(",")[1] || body.image;
+        contents = [{
+          parts: [
+            { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (warna, design, dll) ke dalam ayat iklan." },
+            {
+              inline_data: {
+                mime_type: "image/jpeg",
+                data: base64Data
               }
-            ]
-          }
-        ];
-      } else {
-        contents = [
-          {
-            parts: [{ text: promptText }]
-          }
-        ];
+            }
+          ]
+        }];
       }
 
-      // Hantar API Key melalui Parameter URL standard Google
-      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
+      // Guna model yang lebih stabil (boleh tukar jika mahu)
+      const model = "gemini-2.0-flash"; // atau "gemini-2.5-flash" / "gemini-1.5-flash"
 
-      const response = await fetch(geminiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents })
-      });
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": GEMINI_API_KEY   // <-- penting untuk key AQ.
+          },
+          body: JSON.stringify({ contents })
+        }
+      );
 
       const data = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error.message || "Ralat Gemini API");
+      if (!response.ok || data.error) {
+        throw new Error(data.error?.message || `Gemini error ${response.status}`);
       }
 
-      const waText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sila cuba lagi";
+      const waText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Sila cuba lagi";
 
       return new Response(JSON.stringify({ wa: waText }), {
         headers: { "Content-Type": "application/json", ...cors }
