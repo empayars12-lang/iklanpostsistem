@@ -1,4 +1,3 @@
-// Cloudflare Worker: DeepSeek AI Integration
 export default {
   async fetch(request, env) {
     const cors = {
@@ -20,54 +19,49 @@ export default {
 
     try {
       const body = await request.json();
-      
-      // Ambil API Key dari environment variable Cloudflare
-      const DEEPSEEK_API_KEY = env.DEEPSEEK_API_KEY; 
 
-      if (!DEEPSEEK_API_KEY) {
-        throw new Error("API Key DeepSeek tidak dijumpai dalam tetapan Cloudflare.");
+      // Membaca Token GitHub dari variable DEEPAPI_KEY yang anda tetapkan
+      const GITHUB_TOKEN = env.DEEPAPI_KEY; 
+
+      if (!GITHUB_TOKEN) {
+        throw new Error("Token GitHub (DEEPAPI_KEY) tidak dijumpai di Cloudflare Settings.");
       }
+
+      const service = body.service || "Cetak Baju";
+      const problem = body.problem || "Mahu buat baju custom";
+      const product = body.product || "";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
-Servis: ${body.service || 'Cetak Baju'}
-Masalah Pelanggan: ${body.problem || 'Mahu buat baju custom'}
-${body.product ? `Produk: ${body.product}` : ''}
 
-Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju.`;
+Servis: ${service}
+Masalah Pelanggan: ${problem}
+${product ? `Produk: ${product}` : ""}
 
-      // Nota: DeepSeek buat masa ini TIDAK menyokong input gambar (Vision) untuk model utamanya.
-      // Jadi jika ada gambar, kita cuma beritahu AI bahawa ada gambar, tapi tidak menghantar imej asal.
-      let finalPrompt = promptText;
-      if (body.image) {
-        finalPrompt += " (Nota: Pelanggan turut melampirkan gambar produk, jadikan ayat lebih meyakinkan).";
-      }
+Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju. Guna bahasa Melayu yang santai dan persuasif.`;
 
-      const messages = [
-        { role: "user", content: finalPrompt }
-      ];
-
-      const deepseekUrl = "https://api.deepseek.com/chat/completions";
-
-      const response = await fetch(deepseekUrl, {
+      // Hantar permintaan ke GitHub Models Inference API (Model GPT-4o-mini)
+      const response = await fetch("https://models.inference.ai.azure.com/chat/completions", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${DEEPSEEK_API_KEY}` // Guna Bearer Token
+          "Authorization": `Bearer ${GITHUB_TOKEN}`
         },
-        body: JSON.stringify({ 
-          model: "deepseek-chat", // Model standard DeepSeek
-          messages: messages
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "Anda adalah copywriter profesional dalam bahasa Melayu." },
+            { role: "user", content: promptText }
+          ]
         })
       });
 
       const data = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error.message || "Ralat DeepSeek API");
+      if (!response.ok || data.error) {
+        throw new Error(data.error?.message || `GitHub Models error ${response.status}`);
       }
 
-      // Ambil teks hasil dari respons DeepSeek (format OpenAI)
-      const waText = data.choices?.[0]?.message?.content || "Sila cuba lagi";
+      const waText = data.choices?.[0]?.message?.content?.trim() || "Sila cuba lagi";
 
       return new Response(JSON.stringify({ wa: waText }), {
         headers: { "Content-Type": "application/json", ...cors }
