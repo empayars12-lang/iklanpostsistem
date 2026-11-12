@@ -1,4 +1,4 @@
-// Cloudflare Worker: Gemini API (Sokongan Kunci AQ. & Gambar)
+// Cloudflare Worker: Gemini API (Sokongan Kunci Awalan AQ.)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -21,7 +21,6 @@ export default {
     try {
       const body = await request.json();
       
-      // Kunci API Google AI Studio anda yang sah
       const GEMINI_API_KEY = "AQ.Ab8RN6IyKwymarosg2M7U5acW55OdP7_v7MtHaUj0oUnHqTI8w";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
@@ -56,11 +55,15 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         ];
       }
 
-      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
+      // Menggunakan Header Authorization Bearer untuk Kunci AQ.
+      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
       const response = await fetch(geminiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + GEMINI_API_KEY
+        },
         body: JSON.stringify({ contents })
       });
 
