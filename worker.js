@@ -1,4 +1,4 @@
-// Cloudflare Worker: Gemini 1.5 Flash (Boleh baca teks & gambar secara percuma)
+// Cloudflare Worker: Gemini 1.5 Flash (Percuma & Boleh Baca Gambar)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -21,8 +21,8 @@ export default {
     try {
       const body = await request.json();
       
-      // SALIN & TAMPAL KUNCI LENGKAP YANG BERMULA DENGAN 'AIzaSy...' DI SINI
-      const GEMINI_API_KEY = "MASUKKAN_KUNCI_AIzaSy_LENGKAP_DI_SINI";
+      // Kunci API Google AI Studio anda yang sah:
+      const GEMINI_API_KEY = "AQ.Ab8RN6IyKwymarosg2M7U5acW55OdP7_v7MtHaUj0oUnHqTI8w";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
 Servis: ${body.service || 'Cetak Baju'}
