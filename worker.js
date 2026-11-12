@@ -1,4 +1,4 @@
-// Cloudflare Worker: Gemini 1.5 Flash (Format Sah Parameter URL)
+// Cloudflare Worker: Gemini 1.5 Flash (Kod Lengkap & Stabil)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -21,7 +21,7 @@ export default {
     try {
       const body = await request.json();
       
-      // API Key sah dari Google AI Studio anda
+      // Kunci API Google AI Studio anda
       const GEMINI_API_KEY = "AQ.Ab8RN6IyKwymarosg2M7U5acW55OdP7_v7MtHaUj0oUnHqTI8w";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
@@ -56,7 +56,7 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         ];
       }
 
-      // Hantar API Key melalui parameter URL (Format Wajib Gemini API)
+      // Hantar API Key melalui Parameter URL standard Google
       const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
 
       const response = await fetch(geminiUrl, {
