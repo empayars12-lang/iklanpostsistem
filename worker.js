@@ -1,4 +1,4 @@
-// Cloudflare Worker: Gemini 1.5 Flash (Rasmi & Percuma)
+// Cloudflare Worker: Gemini API (Sokongan Kunci AQ. & Gambar)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -56,7 +56,6 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         ];
       }
 
-      // Menggunakan Endpoint v1beta & Model Sah gemini-1.5-flash
       const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
 
       const response = await fetch(geminiUrl, {
