@@ -155,7 +155,9 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
     <div class="sw"><span>Sertakan link WhatsApp</span><input type="checkbox" id="ai-wa" checked></div>
     <div class="sw" style="padding-top:0"><span>Sertakan hashtag</span><input type="checkbox" id="ai-tags" checked></div>
 
-    <button class="btn grn blk" data-act="gen">✨ Jana Ayat Iklan</button>
+    <button class="btn pri blk" id="btn-ai" data-act="aiwrite" style="margin-bottom:8px">📷 Tulis dengan AI dari gambar</button>
+    <p class="muted" style="margin:0 2px 10px">AI melihat gambar di langkah 5 dan menulis ayat ajakan beli. Perlu internet.</p>
+    <button class="btn grn blk" data-act="gen">✨ Jana Ayat Iklan (templat, percuma)</button>
   </div>
 
   <div id="ai-results" class="hidden">
@@ -189,6 +191,14 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
     <label class="f">Hashtag tetap</label>
     <textarea id="st-tags" rows="3"></textarea>
     <button class="btn grn blk" style="margin-top:12px" data-act="savesettings">Simpan Tetapan</button>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">🤖 AI dari gambar</h2>
+    <p class="muted" style="margin-top:0">Isi sekali sahaja. Alamat dan kata laluan diberi oleh pemilik (lihat panduan pemasangan Worker).</p>
+    <label class="f" style="margin-top:0">Alamat AI (URL Worker)</label>
+    <input id="st-ai-url" type="url" placeholder="https://esk-ai.namaanda.workers.dev">
+    <label class="f">Kata laluan app</label>
+    <input id="st-ai-key" type="password" autocomplete="off">
   </div>
   <div class="card">
     <h2 style="margin-top:0">🔔 Peringatan</h2>
@@ -296,7 +306,7 @@ async function shareText(text,img){
 function compress(file,max=900,q=.72){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height));const c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};i.onerror=rej;i.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
 
 /* ---------- Data ---------- */
-const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false};
+const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false,aiUrl:'',aiKey:''};
 const DEF_CHECK=[
  {id:1,text:'Sediakan blok & dakwat cetak DTF / Silk Screen',done:false},
  {id:2,text:'Semak jadual post pagi, tengah hari & malam',done:false},
@@ -522,10 +532,39 @@ function gen(bump){
 function autosize(el){el.style.height='auto';el.style.height=Math.max(el.scrollHeight+4,el.id==='o-main'?260:70)+'px'}
 function countMain(){$('#o-count').textContent=`${$('#o-main').value.length} aksara`}
 
+/* ---------- AI dari gambar ---------- */
+const TONE_NAME={kel:'kelantan',std:'santai',for:'formal'};
+async function aiWrite(btn){
+  if(!settings.aiUrl)return toast('Isi alamat AI di Tetapan dahulu');
+  if(!ai.img)return toast('Muat naik gambar dahulu (langkah 5)');
+  if(!navigator.onLine)return toast('Tiada internet. Guna butang templat');
+  const old=btn.textContent;btn.disabled=true;btn.textContent='⏳ AI sedang menulis...';
+  const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),45000);
+  try{
+    const r=await fetch(settings.aiUrl,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','X-App-Key':settings.aiKey||''},
+      body:JSON.stringify({image:ai.img,service:SERVICES.find(x=>x.id===ai.service).name,problem:PROBLEMS[ai.problem].l,tone:TONE_NAME[ai.tone],
+        product:$('#ai-prod').value.trim(),time:$('#ai-time').value.trim(),offer:$('#ai-offer').value.trim(),urgency:URG[$('#ai-urg').value]})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.error)throw new Error(d.error||('ralat '+r.status));
+    const useWa=$('#ai-wa').checked,wa=useWa?waBlock():'',tags=$('#ai-tags').checked?settings.hashtags:'';
+    const J=a=>a.filter(Boolean).join('\n\n');
+    $('#o-wa').value=J([d.wa,wa]);
+    $('#o-reel').value=J([d.reel,useWa?`💬 WhatsApp: wasap.my/${settings.waPhone.replace(/\D/g,'')}`:'',tags]);
+    $('#o-vid').value=d.video||'';
+    $('#o-main').value=J([d.main,wa,tags]);
+    $('#ai-results').classList.remove('hidden');
+    $$('#ai-results textarea').forEach(autosize);countMain();
+    $('#ai-results').scrollIntoView({behavior:'smooth',block:'start'});
+    toast('✅ AI siap menulis. Semak sebelum post');
+  }catch(e){toast('AI gagal: '+(e.name==='AbortError'?'masa tamat':e.message)+'. Guna butang templat')}
+  finally{clearTimeout(to);btn.disabled=false;btn.textContent=old}
+}
+
 /* ---------- Tetapan ---------- */
 function fillSettings(){
   $('#st-staff').value=settings.staffName;$('#st-phone').value=settings.waPhone;$('#st-cta').value=settings.waCta;
   $('#st-text').value=settings.waText;$('#st-tags').value=settings.hashtags;$('#st-remind').checked=!!settings.remind;
+  $('#st-ai-url').value=settings.aiUrl||'';$('#st-ai-key').value=settings.aiKey||'';
 }
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('#btn-install').classList.remove('hidden')});
@@ -583,13 +622,14 @@ document.addEventListener('click',async e=>{
    case 'idea':{const i=IDEAS[new Date().getDay()];ai.service=i.service;ai.problem=i.problem;renderChips();go('ai');toast('Pilihan diisi. Tekan Jana Ayat Iklan');break}
    case 'gen':gen(0);ai.seed=ai.seed;break;
    case 'regen':gen(1);break;
+   case 'aiwrite':aiWrite(b);break;
    case 'ocopy':{const el=$('#'+b.dataset.t);toast(await copyText(el.value)?'📋 Disalin':'Gagal salin');break}
    case 'oshare':shareText($('#'+b.dataset.t).value,ai.img);break;
    case 'tosched':{const S=SERVICES.find(x=>x.id===ai.service),P=PROBLEMS[ai.problem];
       openSheet({title:`${$('#ai-prod').value.trim()||S.label}: ${P.l}`,caption:$('#o-main').value,image:ai.img});break}
    case 'savesettings':{
       const ph=$('#st-phone').value.replace(/\D/g,'');if(!ph)return toast('Isi nombor WhatsApp');
-      settings={...settings,staffName:$('#st-staff').value.trim(),waPhone:ph,waCta:$('#st-cta').value.trim(),waText:$('#st-text').value.trim(),hashtags:$('#st-tags').value.trim()};
+      settings={...settings,staffName:$('#st-staff').value.trim(),waPhone:ph,waCta:$('#st-cta').value.trim(),waText:$('#st-text').value.trim(),hashtags:$('#st-tags').value.trim(),aiUrl:$('#st-ai-url').value.trim(),aiKey:$('#st-ai-key').value.trim()};
       SV('esk_settings',settings);toast('✅ Tetapan disimpan');break}
    case 'install':if(deferredInstall){deferredInstall.prompt();deferredInstall=null;b.classList.add('hidden')}break;
    case 'export':{const blob=new Blob([JSON.stringify({v:1,settings,checklist,posts},null,1)],{type:'application/json'});const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download=`esk-kreatif-${todayStr()}.json`;l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);break}
