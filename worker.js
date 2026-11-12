@@ -20,7 +20,7 @@ export default {
     try {
       const body = await request.json();
 
-      // Key AQ. dari Google AI Studio (format baru)
+      // Key AQ. anda
       const GEMINI_API_KEY = "AQ.Ab8RN6JWeVXwq9-EZTVNxJcQSu7s5SrNZaKAfNERtOdQXWMAxw";
 
       const service = body.service || "Cetak Baju";
@@ -52,8 +52,8 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         }];
       }
 
-      // Guna model yang lebih stabil (boleh tukar jika mahu)
-      const model = "gemini-2.0-flash"; // atau "gemini-2.5-flash" / "gemini-1.5-flash"
+      // Model terkini (November 2026)
+      const model = "gemini-3.8-flash";
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -61,7 +61,7 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-goog-api-key": GEMINI_API_KEY   // <-- penting untuk key AQ.
+            "x-goog-api-key": GEMINI_API_KEY
           },
           body: JSON.stringify({ contents })
         }
