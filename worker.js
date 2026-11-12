@@ -20,7 +20,7 @@ export default {
     try {
       const body = await request.json();
 
-      // === GANTI DENGAN API KEY ANDA (bermula dengan AQ.) ===
+      // Key AQ. anda
       const GEMINI_API_KEY = "AQ.Ab8RN6JWeVXwq9-EZTVNxJcQSu7s5SrNZaKAfNERtOdQXWMAxw";
 
       const service = body.service || "Cetak Baju";
@@ -37,14 +37,12 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
 
       let contents = [{ parts: [{ text: promptText }] }];
 
-      // Support gambar jika ada
+      // Sokongan gambar jika ada
       if (body.image) {
         const base64Data = body.image.split(",")[1] || body.image;
         contents = [{
           parts: [
-            { 
-              text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (warna, design, dll) ke dalam ayat iklan." 
-            },
+            { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (warna, design, dll) ke dalam ayat iklan." },
             {
               inline_data: {
                 mime_type: "image/jpeg",
@@ -55,9 +53,8 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         }];
       }
 
-      // Model yang disyorkan (November 2026)
-      // Cuba "gemini-3.8-flash" dulu. Kalau gagal, tukar kepada "gemini-3.5-flash-lite"
-      const model = "gemini-3.8-flash";
+      // Gunakan model gemini-3.5-flash-lite pilihan anda
+      const model = "gemini-3.5-flash-lite";
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -74,7 +71,6 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
       const data = await response.json();
 
       if (!response.ok || data.error) {
-        // Return error sebenar dari Gemini supaya mudah debug
         throw new Error(data.error?.message || `Gemini error ${response.status}`);
       }
 
