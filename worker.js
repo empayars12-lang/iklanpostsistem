@@ -1,3 +1,4 @@
+// Cloudflare Worker: DeepSeek AI Integration
 export default {
   async fetch(request, env) {
     const cors = {
@@ -19,65 +20,54 @@ export default {
 
     try {
       const body = await request.json();
+      
+      // Ambil API Key dari environment variable Cloudflare
+      const DEEPSEEK_API_KEY = env.DEEPSEEK_API_KEY; 
 
-      // Ambil API Key dari Environment Variable Cloudflare
-      const GEMINI_API_KEY = env.GEMINI_API_KEY;
-
-      if (!GEMINI_API_KEY) {
-        throw new Error("GEMINI_API_KEY belum ditetapkan di Cloudflare Settings.");
+      if (!DEEPSEEK_API_KEY) {
+        throw new Error("API Key DeepSeek tidak dijumpai dalam tetapan Cloudflare.");
       }
-
-      const service = body.service || "Cetak Baju";
-      const problem = body.problem || "Mahu buat baju custom";
-      const product = body.product || "";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
+Servis: ${body.service || 'Cetak Baju'}
+Masalah Pelanggan: ${body.problem || 'Mahu buat baju custom'}
+${body.product ? `Produk: ${body.product}` : ''}
 
-Servis: ${service}
-Masalah Pelanggan: ${problem}
-${product ? `Produk: ${product}` : ""}
+Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju.`;
 
-Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju. Guna bahasa Melayu yang santai dan persuasif.`;
-
-      let contents = [{ parts: [{ text: promptText }] }];
-
+      // Nota: DeepSeek buat masa ini TIDAK menyokong input gambar (Vision) untuk model utamanya.
+      // Jadi jika ada gambar, kita cuma beritahu AI bahawa ada gambar, tapi tidak menghantar imej asal.
+      let finalPrompt = promptText;
       if (body.image) {
-        const base64Data = body.image.split(",")[1] || body.image;
-        contents = [{
-          parts: [
-            { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (warna, design, dll) ke dalam ayat iklan." },
-            {
-              inline_data: {
-                mime_type: "image/jpeg",
-                data: base64Data
-              }
-            }
-          ]
-        }];
+        finalPrompt += " (Nota: Pelanggan turut melampirkan gambar produk, jadikan ayat lebih meyakinkan).";
       }
 
-      // Gunakan model gemini-2.0-flash yang disokong kunci baharu
-      const model = "gemini-2.0-flash";
+      const messages = [
+        { role: "user", content: finalPrompt }
+      ];
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": GEMINI_API_KEY
-          },
-          body: JSON.stringify({ contents })
-        }
-      );
+      const deepseekUrl = "https://api.deepseek.com/chat/completions";
+
+      const response = await fetch(deepseekUrl, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${DEEPSEEK_API_KEY}` // Guna Bearer Token
+        },
+        body: JSON.stringify({ 
+          model: "deepseek-chat", // Model standard DeepSeek
+          messages: messages
+        })
+      });
 
       const data = await response.json();
 
-      if (!response.ok || data.error) {
-        throw new Error(data.error?.message || `Gemini error ${response.status}`);
+      if (data.error) {
+        throw new Error(data.error.message || "Ralat DeepSeek API");
       }
 
-      const waText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Sila cuba lagi";
+      // Ambil teks hasil dari respons DeepSeek (format OpenAI)
+      const waText = data.choices?.[0]?.message?.content || "Sila cuba lagi";
 
       return new Response(JSON.stringify({ wa: waText }), {
         headers: { "Content-Type": "application/json", ...cors }
