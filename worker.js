@@ -1,4 +1,4 @@
-// Cloudflare Worker: Gemini 1.5 Flash (Percuma & Boleh Baca Gambar)
+// Cloudflare Worker: Gemini API (Percuma, Boleh Baca Teks & Gambar)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -21,7 +21,7 @@ export default {
     try {
       const body = await request.json();
       
-      // Kunci API Google AI Studio anda yang sah:
+      // API Key Google AI Studio anda
       const GEMINI_API_KEY = "AQ.Ab8RN6IyKwymarosg2M7U5acW55OdP7_v7MtHaUj0oUnHqTI8w";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
@@ -56,7 +56,8 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         ];
       }
 
-      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
+      // Menggunakan Endpoint v1beta dengan Model Terbaharu Gemini
+      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY;
 
       const response = await fetch(geminiUrl, {
         method: "POST",
@@ -67,7 +68,23 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
       const data = await response.json();
 
       if (data.error) {
-        throw new Error(data.error.message || "Ralat Gemini API");
+        // Jika model 2.5 belum diaktifkan, cuba gunakan model 2.0-flash
+        const fallbackUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
+        const resFallback = await fetch(fallbackUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents })
+        });
+        const dataFallback = await resFallback.json();
+        
+        if (dataFallback.error) {
+          throw new Error(dataFallback.error.message || data.error.message || "Ralat Gemini API");
+        }
+        
+        const waTextFB = dataFallback.candidates?.[0]?.content?.parts?.[0]?.text || "Sila cuba lagi";
+        return new Response(JSON.stringify({ wa: waTextFB }), {
+          headers: { "Content-Type": "application/json", ...cors }
+        });
       }
 
       const waText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sila cuba lagi";
