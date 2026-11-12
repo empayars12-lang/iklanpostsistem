@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESK Kreatif — Jadual Iklan Harian & Penjana Kapsyen AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-emerald-100 selection:text-emerald-900">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 border border-slate-700">
+      <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+      <span id="toast-msg" class="text-sm font-medium">Berjaya disalin!</span>
+    </div>
+  </div>
+
+  <!-- Main 3-Panel Layout -->
+  <div class="min-h-screen flex flex-col lg:flex-row">
+
+    <!-- PANEL 1: LEFT SIDEBAR (Navigasi, Tetapan Pantas & Senarai Semak) -->
+    <aside class="w-full lg:w-72 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between shrink-0">
+      <div class="p-5">
+        <!-- Brand Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-extrabold text-lg shadow-sm">
+              E
+            </div>
+            <div>
+              <h1 class="font-extrabold text-slate-900 leading-tight tracking-tight">ESK Kreatif</h1>
+              <p class="text-xs text-slate-500 font-medium">Ad Scheduler & AI Copy</p>
+            </div>
+          </div>
+          <button onclick="openSettingsModal()" title="Tetapan Hashtag & WhatsApp" class="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="space-y-1 mb-6">
+          <button onclick="switchTab('utama')" id="nav-utama" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm transition">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Jadual Harian</span>
+          </button>
+          <button onclick="switchTab('semua')" id="nav-semua" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+            <i data-lucide="calendar-days" class="w-4 h-4"></i>
+            <span>Semua Jadual</span>
+          </button>
+          <button onclick="openSettingsModal()" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+            <span class="flex items-center gap-3">
+              <i data-lucide="hash" class="w-4 h-4 text-emerald-600"></i>
+              <span>Set # & WhatsApp</span>
+            </span>
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Auto</span>
+          </button>
+        </nav>
+
+        <!-- Ringkasan Tetapan Auto Footer -->
+        <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Footer Post Tetap</span>
+            <button onclick="openSettingsModal()" class="text-xs font-semibold text-emerald-700 hover:underline">Ubah</button>
+          </div>
+          <div class="space-y-2 text-xs text-slate-600">
+            <div class="flex items-start gap-2">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0"></i>
+              <span id="sidebar-wa-preview" class="font-mono text-[11px] break-all text-slate-700">wasap.my/60139727212</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <i data-lucide="hash" class="w-3.5 h-3.5 text-blue-600 mt-0.5 shrink-0"></i>
+              <span id="sidebar-hash-preview" class="text-[11px] line-clamp-2 text-slate-600">#ESKPrinting #CetakBajuKelantan...</span>
+            </div>
+            <div class="pt-1 border-t border-slate-200 flex items-center justify-between">
+              <span class="text-[11px] text-slate-500">Auto-sertakan di bawah post:</span>
+              <span id="sidebar-auto-status" class="text-[11px] font-bold text-emerald-600">AKTIF</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Senarai Semak Harian -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Senarai Semak Harian</h2>
+            <span id="checklist-progress" class="text-xs font-semibold text-slate-500">0/4</span>
+          </div>
+          <div id="checklist-container" class="space-y-2">
+            <!-- Checklist items injected via JS -->
+          </div>
+          <div class="mt-3 flex gap-1.5">
+            <input type="text" id="new-task-input" placeholder="Tambah tugasan..." class="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-slate-400" onkeydown="if(event.key==='Enter') addChecklistItem()">
+            <button onclick="addChecklistItem()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile Footer -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
+            ES
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-800">Empayar S Printing</p>
+            <p class="text-[11px] text-slate-500">Ketereh, Kelantan</p>
+          </div>
+        </div>
+        <button onclick="resetDemoData()" title="Set Semula Data Contoh" class="text-xs text-slate-400 hover:text-slate-600">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- PANEL 2: CENTER MAIN FEED (Jadual Iklan Harian) -->
+    <main class="flex-1 p-5 lg:p-7 overflow-y-auto custom-scrollbar">
+      <!-- Top Header & Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 id="main-view-title" class="text-2xl font-extrabold text-slate-900 tracking-tight">Jadual Iklan Harian</h2>
+          <p class="text-sm text-slate-500 mt-0.5">Susun kempen printing & pakaian mengikut waktu puncak media sosial</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5">
+          <input type="date" id="filter-date" onchange="renderPosts()" class="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
+          <button onclick="openPostModal()" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-xl shadow-sm flex items-center gap-2 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Buat Jadual Baru</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats & Platform Filters -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs font-medium text-slate-500">Jumlah Post Hari Ini</p>
+          <p id="stat-total" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+        </div>
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs font-medium text-slate-500">Dijadualkan</p>
+          <p id="stat-scheduled" class="text-2xl font-extrabold text-blue-600 mt-1">0</p>
+        </div>
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs font-medium text-slate-500">Selesai Post</p>
+          <p id="stat-published" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+        </div>
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm">
+          <p class="text-xs font-medium text-slate-500">Draf</p>
+          <p id="stat-draft" class="text-2xl font-extrabold text-amber-500 mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button onclick="setPlatformFilter('ALL')" data-filter="ALL" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white transition">Semua</button>
+          <button onclick="setPlatformFilter('Facebook')" data-filter="Facebook" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">Facebook</button>
+          <button onclick="setPlatformFilter('Instagram')" data-filter="Instagram" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">Instagram</button>
+          <button onclick="setPlatformFilter('TikTok')" data-filter="TikTok" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition">TikTok</button>
+        </div>
+        <select id="filter-category" onchange="renderPosts()" class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none">
+          <option value="ALL">Semua Kategori Bisnes</option>
+          <option value="Servis Printing">Servis Printing</option>
+          <option value="Jualan Pakaian">Jualan Pakaian</option>
+          <option value="Promo & Testimoni">Promo & Testimoni</option>
+        </select>
+      </div>
+
+      <!-- Timeline Posts List -->
+      <div id="posts-container" class="space-y-4">
+        <!-- Post cards rendered here -->
+      </div>
+    </main>
+
+    <!-- PANEL 3: RIGHT SIDEBAR (Penganalisis Imej AI & Penulis Kapsyen) -->
+    <aside class="w-full lg:w-[410px] bg-white border-t lg:border-t-0 lg:border-l border-slate-200 p-5 flex flex-col justify-between shrink-0 overflow-y-auto custom-scrollbar">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h2 class="font-extrabold text-slate-900 text-base">Penganalisis Imej AI & Kapsyen</h2>
+          </div>
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">AI Studio</span>
+        </div>
+
+        <!-- Image Upload Box -->
+        <div class="mb-4">
+          <label for="ai-image-input" class="block cursor-pointer group">
+            <div id="ai-image-preview-box" class="relative h-44 rounded-2xl border-2 border-dashed border-slate-300 group-hover:border-emerald-500 bg-slate-50 flex flex-col items-center justify-center overflow-hidden transition">
+              <img id="ai-preview-img" src="" alt="Preview" class="hidden w-full h-full object-cover">
+              <div id="ai-upload-placeholder" class="text-center p-4">
+                <div class="w-10 h-10 rounded-full bg-white shadow-sm border border-slate-200 flex items-center justify-center mx-auto mb-2 text-slate-600 group-hover:text-emerald-600">
+                  <i data-lucide="image-plus" class="w-5 h-5"></i>
+                </div>
+                <p class="text-xs font-bold text-slate-700">Muat Naik Gambar Printing / Pakaian</p>
+                <p class="text-[11px] text-slate-400 mt-0.5">Klik untuk pilih foto proses cetak, baju, atau apron</p>
+              </div>
+            </div>
+          </label>
+          <input type="file" id="ai-image-input" accept="image/*" class="hidden" onchange="handleAIImageUpload(event)">
+        </div>
+
+        <!-- Konteks Tambahan Ringkas (Optional) -->
+        <div class="mb-3">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Butiran Tambahan (Pilihan)</label>
+          <input type="text" id="ai-context-input" placeholder="Cth: Apron hitam Skin Dessert, siap 50 helai..." class="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <!-- Tone Selector: Santai Kelantan vs Formal -->
+        <div class="mb-4">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Nada Kapsyen:</label>
+          <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+            <button type="button" id="tone-kelantan" onclick="setAITone('kelantan')" class="py-2 px-3 rounded-lg text-xs font-bold bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1.5 transition">
+              <span>🧢 Santai Kelantan</span>
+            </button>
+            <button type="button" id="tone-formal" onclick="setAITone('formal')" class="py-2 px-3 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition">
+              <span>👔 Formal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Generate Button -->
+        <button onclick="generateAICaption()" id="btn-generate-ai" class="w-full py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm rounded-xl shadow-sm flex items-center justify-center gap-2 transition mb-4">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Jana Ayat Iklan AI</span>
+        </button>
+
+        <!-- Pemerhatian Imej AI -->
+        <div id="ai-observation-box" class="hidden mb-3 bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p class="text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <i data-lucide="scan-eye" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Pemerhatian Imej AI:</span>
+          </p>
+          <ul id="ai-observation-list" class="text-xs text-slate-600 space-y-0.5 list-disc list-inside"></ul>
+        </div>
+
+        <!-- Generated Caption Output -->
+        <div class="mb-3">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-bold text-slate-800">Kapsyen Dijana:</label>
+            <button onclick="copyAICaption()" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Salin</span>
+            </button>
+          </div>
+          <textarea id="ai-output-textarea" rows="7" class="w-full text-xs leading-relaxed p-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:outline-none focus:border-emerald-600" placeholder="Hasil ayat iklan akan muncul di sini..."></textarea>
+        </div>
+
+        <!-- BUTANG SISIPAN PANTAS: # TETAP & WASAP.MY -->
+        <div class="grid grid-cols-2 gap-2 mb-4">
+          <button type="button" onclick="appendSavedHashtags('ai-output-textarea')" class="py-2 px-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+            <i data-lucide="hash" class="w-3.5 h-3.5"></i>
+            <span>+ Set # Tetap</span>
+          </button>
+          <button type="button" onclick="appendSavedWhatsApp('ai-output-textarea')" class="py-2 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>+ Link wasap.my</span>
+          </button>
+        </div>
+
+        <!-- Use Caption to Schedule Button -->
+        <button onclick="sendAICaptionToModal()" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition">
+          <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+          <span>Guna Kapsyen Ini ke Jadual</span>
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- MODAL 1: BUAT / UBAH JADUAL IKLAN -->
+  <div id="post-modal" class="fixed inset-0 z-40 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
+        <h3 id="modal-title" class="font-extrabold text-lg text-slate-900">Buat Jadual Iklan Baru</h3>
+        <button onclick="closePostModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="post-form" onsubmit="savePost(event)" class="p-5 space-y-4">
+        <input type="hidden" id="edit-post-id" value="">
+
+        <!-- Pilih Platform -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Pilih Platform</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="cursor-pointer">
+              <input type="checkbox" name="platform" value="Facebook" class="peer hidden" checked>
+              <div class="py-2 px-3 rounded-xl border border-slate-200 text-center text-xs font-bold text-slate-600 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 transition">
+                Facebook
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="checkbox" name="platform" value="Instagram" class="peer hidden">
+              <div class="py-2 px-3 rounded-xl border border-slate-200 text-center text-xs font-bold text-slate-600 peer-checked:bg-pink-600 peer-checked:text-white peer-checked:border-pink-600 transition">
+                Instagram
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="checkbox" name="platform" value="TikTok" class="peer hidden">
+              <div class="py-2 px-3 rounded-xl border border-slate-200 text-center text-xs font-bold text-slate-600 peer-checked:bg-slate-900 peer-checked:text-white peer-checked:border-slate-900 transition">
+                TikTok
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Kategori & Status -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Kempen</label>
+            <select id="post-category" class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900">
+              <option value="Servis Printing">Servis Printing</option>
+              <option value="Jualan Pakaian">Jualan Pakaian</option>
+              <option value="Promo & Testimoni">Promo & Testimoni</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status</label>
+            <select id="post-status" class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900">
+              <option value="Dijadualkan">🔵 Dijadualkan (Scheduled)</option>
+              <option value="Draf">🟡 Dalam Draf (Draft)</option>
+              <option value="Selesai">🟢 Selesai (Published)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tarikh & Waktu Puncak Pintar -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tarikh Post</label>
+            <input type="date" id="post-date" required class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Masa Post</label>
+            <input type="time" id="post-time" value="20:30" required class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900">
+          </div>
+        </div>
+
+        <!-- Butang Pintas Waktu Puncak -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+          <span class="block text-[11px] font-bold text-slate-600 mb-2">⚡ Pilihan Pantas Waktu Puncak:</span>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="setPeakTime('08:30')" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-lg text-xs font-semibold text-slate-700 transition">
+              🌅 08:30 AM (Sarapan / Soft-sell)
+            </button>
+            <button type="button" onclick="setPeakTime('13:00')" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-lg text-xs font-semibold text-slate-700 transition">
+              ☀️ 01:00 PM (Rehat Tengah Hari)
+            </button>
+            <button type="button" onclick="setPeakTime('20:30')" class="px-2.5 py-1.5 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-lg text-xs font-semibold text-slate-700 transition">
+              🌙 08:30 PM (Waktu Puncak Malam)
+            </button>
+          </div>
+        </div>
+
+        <!-- Tajuk Kempen -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tajuk Ringkas / Idea Hook</label>
+          <input type="text" id="post-title" required placeholder="Cth: Batch Apron Skin Dessert & Promo Baju Family Day" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900">
+        </div>
+
+        <!-- Copywriting / Caption -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-slate-700">Ayat Iklan (Copywriting)</label>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="appendSavedHashtags('post-caption')" class="px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md text-[11px] font-bold flex items-center gap-1 transition">
+                <i data-lucide="hash" class="w-3 h-3"></i>
+                <span>+ # Set</span>
+              </button>
+              <button type="button" onclick="appendSavedWhatsApp('post-caption')" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-md text-[11px] font-bold flex items-center gap-1 transition">
+                <i data-lucide="message-circle" class="w-3 h-3"></i>
+                <span>+ wasap.my</span>
+              </button>
+            </div>
+          </div>
+          <textarea id="post-caption" rows="5" required placeholder="Tulis ayat iklan di sini atau klik butang di atas untuk masukkan # dan link WhatsApp..." class="w-full p-3 text-xs leading-relaxed rounded-xl border border-slate-200 focus:outline-none focus:border-slate-900"></textarea>
+
+          <!-- Checkbox Auto-Sertakan di bawah post -->
+          <div class="mt-2 flex flex-wrap items-center justify-between gap-2 bg-emerald-50/70 border border-emerald-200/80 px-3 py-2 rounded-xl">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+              <input type="checkbox" id="post-auto-footer" checked class="rounded text-emerald-600 focus:ring-emerald-500">
+              <span>Sentiasa sertakan # tetap & link wasap.my di bawah post ini</span>
+            </label>
+            <button type="button" onclick="openSettingsModal()" class="text-[11px] font-bold text-emerald-700 hover:underline">Ubah Tetapan</button>
+          </div>
+        </div>
+
+        <!-- Upload Gambar Post (Optional) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Gambar Rujukan (Pilihan)</label>
+          <input type="file" id="post-image-file" accept="image/*" onchange="handleModalImageUpload(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+          <img id="modal-image-preview" src="" class="hidden mt-2 h-24 rounded-lg object-cover border border-slate-200">
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-200">
+          <button type="button" onclick="closePostModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm">Simpan Jadual</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: TETAPAN HASHTAG TETAP & PAUTAN WHATSAPP -->
+  <div id="settings-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-emerald-600"></i>
+          <h3 class="font-extrabold text-base text-slate-900">Tetapan # & Link wasap.my</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveFooterSettings(event)" class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nombor Telefon WhatsApp (Format 601...)</label>
+          <input type="text" id="setting-wa-phone" placeholder="60139727212" required class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600">
+          <p class="text-[11px] text-slate-400 mt-1">Akan dijana sebagai: <span id="wa-url-preview" class="font-mono text-emerald-700">https://wasap.my/60139727212</span></p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ayat Call-To-Action (CTA) WhatsApp</label>
+          <input type="text" id="setting-wa-cta" placeholder="📲 Tempah & tanya harga terus di WhatsApp:" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mesej Auto-Isi WhatsApp (Pilihan)</label>
+          <input type="text" id="setting-wa-text" placeholder="Nak tanya pasal servis printing / pakaian" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Set Hashtag (#) Tetap</label>
+          <textarea id="setting-hashtags" rows="3" required class="w-full p-3 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600" placeholder="#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan..."></textarea>
+        </div>
+
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-800">Auto-Sertakan Di Bawah Setiap Post</p>
+            <p class="text-[11px] text-slate-500">Otomatik tambah link wasap.my & # bila simpan/salin</p>
+          </div>
+          <input type="checkbox" id="setting-auto-append" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm">Simpan Tetapan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- STATE & DEFAULT DATA ---
+    const TODAY = new Date().toISOString().split('T')[0];
+
+    const DEFAULT_SETTINGS = {
+      waPhone: '60139727212',
+      waCta: '📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',
+      waText: 'Hai ESK Printing, saya nak tanya pakej printing / pakaian',
+      hashtags: '#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',
+      autoAppend: true
+    };
+
+    const DEFAULT_CHECKLIST = [
+      { id: 1, text: 'Sediakan blok & dakwat cetak DTF / Silk Screen', done: true },
+      { id: 2, text: 'Semak jadual post pagi & tengah hari', done: true },
+      { id: 3, text: 'Ambil gambar/video proses printing hari ini', done: false },
+      { id: 4, text: 'Balas semua komen & PM WhatsApp pelanggan', done: false }
+    ];
+
+    const DEFAULT_POSTS = [
+      {
+        id: 'post-1',
+        date: TODAY,
+        time: '08:30',
+        platforms: ['Facebook', 'Instagram'],
+        category: 'Servis Printing',
+        status: 'Selesai',
+        title: 'Behind The Scenes: Cetakan Apron Skin Dessert',
+        caption: 'Pagi-pagi lagi stesen cetak kita dah penuh! Siapkan batch apron hitam untuk team Skin Dessert. Warna merah & kuning naik molek atas kain hitam, tajam dan tahan lasak.',
+        includeFooter: true,
+        image: ''
+      },
+      {
+        id: 'post-2',
+        date: TODAY,
+        time: '13:00',
+        platforms: ['Instagram', 'Facebook'],
+        category: 'Jualan Pakaian',
+        status: 'Dijadualkan',
+        title: 'Restock Baju Kosong Cotton & Microfiber Jersi',
+        caption: 'Tengah cari baju kosong berkualiti untuk event family day atau sukaneka sekolah? Stok saiz dari XS sampai 5XL sedia ada di kedai Ketereh!',
+        includeFooter: true,
+        image: ''
+      },
+      {
+        id: 'post-3',
+        date: TODAY,
+        time: '20:30',
+        platforms: ['TikTok', 'Facebook'],
+        category: 'Promo & Testimoni',
+        status: 'Dijadualkan',
+        title: 'Video Proses Silk Screen Karusel (Waktu Puncak)',
+        caption: 'Tengok sendiri macam mana kami cetak berpuluh helai apron serentak dengan kemas. Nak buat uniform kedai makan, kafe, atau barbershop? Slot minggu ni masih dibuka!',
+        includeFooter: true,
+        image: ''
+      }
+    ];
+
+    let appSettings = JSON.parse(localStorage.getItem('esk_settings')) || DEFAULT_SETTINGS;
+    let checklist = JSON.parse(localStorage.getItem('esk_checklist')) || DEFAULT_CHECKLIST;
+    let posts = JSON.parse(localStorage.getItem('esk_posts')) || DEFAULT_POSTS;
+    let currentPlatformFilter = 'ALL';
+    let currentViewMode = 'utama'; // 'utama' (hari dipilih) atau 'semua'
+    let currentAITone = 'kelantan';
+    let currentAIImageBase64 = '';
+    let modalImageBase64 = '';
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('filter-date').value = TODAY;
+      document.getElementById('post-date').value = TODAY;
+      updateSettingsUI();
+      renderChecklist();
+      renderPosts();
+      lucide.createIcons();
+
+      // Live preview URL WhatsApp dalam modal tetapan
+      document.getElementById('setting-wa-phone').addEventListener('input', (e) => {
+        const cleanPhone = e.target.value.replace(/[^0-9]/g, '');
+        document.getElementById('wa-url-preview').textContent = `https://wasap.my/${cleanPhone || '60139727212'}`;
+      });
+    });
+
+    // --- HELPER: FORMAT FOOTER (# & WASAP.MY) ---
+    function getWhatsAppBlock() {
+      const cleanPhone = appSettings.waPhone.replace(/[^0-9]/g, '');
+      const encodedText = appSettings.waText ? `/${encodeURIComponent(appSettings.waText)}` : '';
+      return `${appSettings.waCta}\nhttps://wasap.my/${cleanPhone}${encodedText}`;
+    }
+
+    function getFullPostText(post) {
+      let text = post.caption.trim();
+      const shouldInclude = post.includeFooter !== undefined ? post.includeFooter : appSettings.autoAppend;
+
+      if (shouldInclude) {
+        const waBlock = getWhatsAppBlock();
+        const hashBlock = appSettings.hashtags.trim();
+
+        if (!text.includes('wasap.my/')) {
+          text += `\n\n${waBlock}`;
+        }
+        if (hashBlock && !text.includes(hashBlock.split(' ')[0])) {
+          text += `\n\n${hashBlock}`;
+        }
+      }
+      return text;
+    }
+
+    // --- BUTANG SISIPAN PANTAS (# TETAP & WASAP.MY) ---
+    function appendSavedHashtags(textareaId) {
+      const el = document.getElementById(textareaId);
+      const hashBlock = appSettings.hashtags.trim();
+      if (!hashBlock) return showToast('Sila tetapkan hashtag di menu Tetapan dahulu.');
+
+      if (el.value.includes(hashBlock)) {
+        showToast('Set # tetap sudah ada dalam teks!');
+        return;
+      }
+      el.value = el.value.trim() ? `${el.value.trim()}\n\n${hashBlock}` : hashBlock;
+      showToast('Set # tetap berjaya dimasukkan!');
+    }
+
+    function appendSavedWhatsApp(textareaId) {
+      const el = document.getElementById(textareaId);
+      const waBlock = getWhatsAppBlock();
+
+      if (el.value.includes('wasap.my/')) {
+        showToast('Pautan wasap.my sudah ada dalam teks!');
+        return;
+      }
+      el.value = el.value.trim() ? `${el.value.trim()}\n\n${waBlock}` : waBlock;
+      showToast('Link wasap.my berjaya dimasukkan!');
+    }
+
+    // --- SETTINGS MODAL ---
+    function openSettingsModal() {
+      document.getElementById('setting-wa-phone').value = appSettings.waPhone;
+      document.getElementById('setting-wa-cta').value = appSettings.waCta;
+      document.getElementById('setting-wa-text').value = appSettings.waText;
+      document.getElementById('setting-hashtags').value = appSettings.hashtags;
+      document.getElementById('setting-auto-append').checked = appSettings.autoAppend;
+      document.getElementById('wa-url-preview').textContent = `https://wasap.my/${appSettings.waPhone}`;
+      document.getElementById('settings-modal').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.add('hidden');
+    }
+
+    function saveFooterSettings(e) {
+      e.preventDefault();
+      appSettings = {
+        waPhone: document.getElementById('setting-wa-phone').value.replace(/[^0-9]/g, ''),
+        waCta: document.getElementById('setting-wa-cta').value.trim(),
+        waText: document.getElementById('setting-wa-text').value.trim(),
+        hashtags: document.getElementById('setting-hashtags').value.trim(),
+        autoAppend: document.getElementById('setting-auto-append').checked
+      };
+      localStorage.setItem('esk_settings', JSON.stringify(appSettings));
+      updateSettingsUI();
+      renderPosts();
+      closeSettingsModal();
+      showToast('Tetapan # dan link wasap.my dikemas kini!');
+    }
+
+    function updateSettingsUI() {
+      document.getElementById('sidebar-wa-preview').textContent = `wasap.my/${appSettings.waPhone}`;
+      document.getElementById('sidebar-hash-preview').textContent = appSettings.hashtags;
+      const statusEl = document.getElementById('sidebar-auto-status');
+      statusEl.textContent = appSettings.autoAppend ? 'AKTIF' : 'MANUAL';
+      statusEl.className = appSettings.autoAppend
+        ? 'text-[11px] font-bold text-emerald-600'
+        : 'text-[11px] font-bold text-slate-400';
+    }
+
+    // --- CHECKLIST LOGIC ---
+    function renderChecklist() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = '';
+      let doneCount = 0;
+
+      checklist.forEach(item => {
+        if (item.done) doneCount++;
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between gap-2 p-2 rounded-lg hover:bg-slate-50 group transition';
+        row.innerHTML = `
+          <label class="flex items-start gap-2.5 cursor-pointer flex-1">
+            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklist(${item.id})" class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+            <span class="text-xs ${item.done ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">${item.text}</span>
+          </label>
+          <button onclick="deleteChecklist(${item.id})" class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('checklist-progress').textContent = `${doneCount}/${checklist.length}`;
+      lucide.createIcons();
+    }
+
+    function toggleChecklist(id) {
+      checklist = checklist.map(item => item.id === id ? { ...item, done: !item.done } : item);
+      localStorage.setItem('esk_checklist', JSON.stringify(checklist));
+      renderChecklist();
+    }
+
+    function addChecklistItem() {
+      const input = document.getElementById('new-task-input');
+      const text = input.value.trim();
+      if (!text) return;
+      checklist.push({ id: Date.now(), text, done: false });
+      localStorage.setItem('esk_checklist', JSON.stringify(checklist));
+      input.value = '';
+      renderChecklist();
+    }
+
+    function deleteChecklist(id) {
+      checklist = checklist.filter(item => item.id !== id);
+      localStorage.setItem('esk_checklist', JSON.stringify(checklist));
+      renderChecklist();
+    }
+
+    // --- POSTS & TIMELINE LOGIC ---
+    function switchTab(mode) {
+      currentViewMode = mode;
+      const btnUtama = document.getElementById('nav-utama');
+      const btnSemua = document.getElementById('nav-semua');
+      const title = document.getElementById('main-view-title');
+
+      if (mode === 'utama') {
+        btnUtama.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm transition';
+        btnSemua.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition';
+        title.textContent = 'Jadual Iklan Harian';
+      } else {
+        btnSemua.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm transition';
+        btnUtama.className = 'w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition';
+        title.textContent = 'Semua Jadual Kempen';
+      }
+      renderPosts();
+    }
+
+    function setPlatformFilter(platform) {
+      currentPlatformFilter = platform;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.filter === platform) {
+          btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white transition';
+        } else {
+          btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 transition';
+        }
+      });
+      renderPosts();
+    }
+
+    function getPeakBadge(time) {
+      if (time >= '08:00' && time <= '09:30') {
+        return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">🌅 Waktu Puncak Pagi</span>';
+      }
+      if (time >= '12:30' && time <= '14:00') {
+        return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800">☀️ Waktu Rehat Tengah Hari</span>';
+      }
+      if (time >= '20:00' && time <= '22:30') {
+        return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">🔥 Waktu Puncak Malam</span>';
+      }
+      return '';
+    }
+
+    function getStatusBadge(status) {
+      if (status === 'Selesai') return '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700">🟢 Selesai</span>';
+      if (status === 'Draf') return '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700">🟡 Draf</span>';
+      return '<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700">🔵 Dijadualkan</span>';
+    }
+
+    function renderPosts() {
+      const selectedDate = document.getElementById('filter-date').value;
+      const selectedCategory = document.getElementById('filter-category').value;
+      const container = document.getElementById('posts-container');
+
+      let filtered = posts.filter(p => {
+        const matchDate = currentViewMode === 'semua' ? true : p.date === selectedDate;
+        const matchPlatform = currentPlatformFilter === 'ALL' ? true : p.platforms.includes(currentPlatformFilter);
+        const matchCategory = selectedCategory === 'ALL' ? true : p.category === selectedCategory;
+        return matchDate && matchPlatform && matchCategory;
+      });
+
+      filtered.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+      // Update stats based on date view
+      const dayPosts = currentViewMode === 'semua' ? posts : posts.filter(p => p.date === selectedDate);
+      document.getElementById('stat-total').textContent = dayPosts.length;
+      document.getElementById('stat-scheduled').textContent = dayPosts.filter(p => p.status === 'Dijadualkan').length;
+      document.getElementById('stat-published').textContent = dayPosts.filter(p => p.status === 'Selesai').length;
+      document.getElementById('stat-draft').textContent = dayPosts.filter(p => p.status === 'Draf').length;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white border border-dashed border-slate-300 rounded-2xl p-10 text-center">
+            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
+              <i data-lucide="calendar-off" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">Tiada jadual iklan untuk paparan ini</h3>
+            <p class="text-xs text-slate-500 mt-1 mb-4">Klik "Buat Jadual Baru" atau guna Penganalisis Imej AI di sebelah kanan.</p>
+            <button onclick="openPostModal()" class="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl">+ Tambah Iklan Sekarang</button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = filtered.map(post => {
+        const fullText = getFullPostText(post);
+        const platformBadges = post.platforms.map(pl => {
+          if (pl === 'Facebook') return '<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">Facebook</span>';
+          if (pl === 'Instagram') return '<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-pink-50 text-pink-700 border border-pink-200">Instagram</span>';
+          return '<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-800 border border-slate-300">TikTok</span>';
+        }).join('');
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs hover:shadow-md transition">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-extrabold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg">${post.time}</span>
+                ${currentViewMode === 'semua' ? `<span class="text-xs font-semibold text-slate-500">${post.date}</span>` : ''}
+                ${getPeakBadge(post.time)}
+                <span class="text-xs font-semibold text-slate-500">• ${post.category}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                ${getStatusBadge(post.status)}
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              ${post.image ? `<img src="${post.image}" alt="Media" class="w-full sm:w-28 h-28 rounded-xl object-cover border border-slate-200 shrink-0">` : ''}
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
+                  ${platformBadges}
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-base mb-1.5">${post.title}</h3>
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/70 text-xs text-slate-700 whitespace-pre-line leading-relaxed max-h-36 overflow-y-auto custom-scrollbar">${fullText}</div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <button onclick="copyPostFullText('${post.id}')" class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 shadow-xs transition">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Copy Caption + # & Wasap</span>
+                </button>
+                ${post.status !== 'Selesai' ? `
+                  <button onclick="markPostPublished('${post.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 text-xs font-bold rounded-xl transition">
+                    ✓ Tanda Selesai
+                  </button>
+                ` : ''}
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="editPost('${post.id}')" class="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition" title="Ubah Suai">
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deletePost('${post.id}')" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Padam">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function copyPostFullText(id) {
+      const post = posts.find(p => p.id === id);
+      if (!post) return;
+      const fullText = getFullPostText(post);
+      navigator.clipboard.writeText(fullText).then(() => {
+        showToast('Kapsyen lengkap (# & link wasap.my) disalin!');
+      });
+    }
+
+    function markPostPublished(id) {
+      posts = posts.map(p => p.id === id ? { ...p, status: 'Selesai' } : p);
+      localStorage.setItem('esk_posts', JSON.stringify(posts));
+      renderPosts();
+      showToast('Status iklan ditukar kepada Selesai!');
+    }
+
+    function deletePost(id) {
+      if (!confirm('Padam jadual iklan ini?')) return;
+      posts = posts.filter(p => p.id !== id);
+      localStorage.setItem('esk_posts', JSON.stringify(posts));
+      renderPosts();
+      showToast('Jadual iklan dipadam.');
+    }
+
+    // --- POST MODAL LOGIC ---
+    function openPostModal(prefillData = null) {
+      document.getElementById('post-form').reset();
+      document.getElementById('edit-post-id').value = '';
+      document.getElementById('modal-title').textContent = 'Buat Jadual Iklan Baru';
+      document.getElementById('post-date').value = document.getElementById('filter-date').value || TODAY;
+      document.getElementById('post-time').value = '20:30';
+      document.getElementById('post-auto-footer').checked = appSettings.autoAppend;
+      modalImageBase64 = '';
+      document.getElementById('modal-image-preview').classList.add('hidden');
+
+      if (prefillData) {
+        document.getElementById('post-title').value = prefillData.title || '';
+        document.getElementById('post-caption').value = prefillData.caption || '';
+        if (prefillData.image) {
+          modalImageBase64 = prefillData.image;
+          const imgEl = document.getElementById('modal-image-preview');
+          imgEl.src = prefillData.image;
+          imgEl.classList.remove('hidden');
+        }
+      }
+
+      document.getElementById('post-modal').classList.remove('hidden');
+    }
+
+    function closePostModal() {
+      document.getElementById('post-modal').classList.add('hidden');
+    }
+
+    function setPeakTime(timeStr) {
+      document.getElementById('post-time').value = timeStr;
+      showToast(`Masa ditetapkan ke ${timeStr}`);
+    }
+
+    function handleModalImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        modalImageBase64 = ev.target.result;
+        const imgEl = document.getElementById('modal-image-preview');
+        imgEl.src = modalImageBase64;
+        imgEl.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function savePost(e) {
+      e.preventDefault();
+      const editId = document.getElementById('edit-post-id').value;
+      const checkedPlatforms = Array.from(document.querySelectorAll('input[name="platform"]:checked')).map(cb => cb.value);
+
+      if (checkedPlatforms.length === 0) {
+        alert('Sila pilih sekurang-kurangnya satu platform (Facebook, Instagram, atau TikTok).');
+        return;
+      }
+
+      const postObj = {
+        id: editId || 'post-' + Date.now(),
+        date: document.getElementById('post-date').value,
+        time: document.getElementById('post-time').value,
+        platforms: checkedPlatforms,
+        category: document.getElementById('post-category').value,
+        status: document.getElementById('post-status').value,
+        title: document.getElementById('post-title').value.trim(),
+        caption: document.getElementById('post-caption').value.trim(),
+        includeFooter: document.getElementById('post-auto-footer').checked,
+        image: modalImageBase64
+      };
+
+      if (editId) {
+        posts = posts.map(p => p.id === editId ? postObj : p);
+        showToast('Jadual iklan dikemas kini!');
+      } else {
+        posts.push(postObj);
+        showToast('Jadual iklan baru disimpan!');
+      }
+
+      localStorage.setItem('esk_posts', JSON.stringify(posts));
+      closePostModal();
+      renderPosts();
+    }
+
+    function editPost(id) {
+      const post = posts.find(p => p.id === id);
+      if (!post) return;
+
+      document.getElementById('edit-post-id').value = post.id;
+      document.getElementById('modal-title').textContent = 'Ubah Suai Jadual Iklan';
+      document.getElementById('post-date').value = post.date;
+      document.getElementById('post-time').value = post.time;
+      document.getElementById('post-category').value = post.category;
+      document.getElementById('post-status').value = post.status;
+      document.getElementById('post-title').value = post.title;
+      document.getElementById('post-caption').value = post.caption;
+      document.getElementById('post-auto-footer').checked = post.includeFooter !== undefined ? post.includeFooter : appSettings.autoAppend;
+
+      document.querySelectorAll('input[name="platform"]').forEach(cb => {
+        cb.checked = post.platforms.includes(cb.value);
+      });
+
+      if (post.image) {
+        modalImageBase64 = post.image;
+        const imgEl = document.getElementById('modal-image-preview');
+        imgEl.src = post.image;
+        imgEl.classList.remove('hidden');
+      } else {
+        modalImageBase64 = '';
+        document.getElementById('modal-image-preview').classList.add('hidden');
+      }
+
+      document.getElementById('post-modal').classList.remove('hidden');
+    }
+
+    // --- PANEL KANAN: AI ANALISIS IMEJ & PENJANA KAPSYEN ---
+    function handleAIImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        currentAIImageBase64 = ev.target.result;
+        const previewImg = document.getElementById('ai-preview-img');
+        previewImg.src = currentAIImageBase64;
+        previewImg.classList.remove('hidden');
+        document.getElementById('ai-upload-placeholder').classList.add('hidden');
+
+        // Auto-isi konteks berdasarkan nama fail jika kosong
+        const contextInput = document.getElementById('ai-context-input');
+        if (!contextInput.value.trim()) {
+          const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+          contextInput.value = cleanName;
+        }
+        showToast('Gambar berjaya dimuat naik untuk analisis AI!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setAITone(tone) {
+      currentAITone = tone;
+      const btnKelantan = document.getElementById('tone-kelantan');
+      const btnFormal = document.getElementById('tone-formal');
+
+      if (tone === 'kelantan') {
+        btnKelantan.className = 'py-2 px-3 rounded-lg text-xs font-bold bg-white text-emerald-700 shadow-sm flex items-center justify-center gap-1.5 transition';
+        btnFormal.className = 'py-2 px-3 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition';
+      } else {
+        btnFormal.className = 'py-2 px-3 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-sm flex items-center justify-center gap-1.5 transition';
+        btnKelantan.className = 'py-2 px-3 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center justify-center gap-1.5 transition';
+      }
+    }
+
+    function generateAICaption() {
+      const context = document.getElementById('ai-context-input').value.trim();
+      const obsBox = document.getElementById('ai-observation-box');
+      const obsList = document.getElementById('ai-observation-list');
+      const outputEl = document.getElementById('ai-output-textarea');
+
+      const subjek = context || 'Cetakan apron / baju uniform tempahan pukal di bengkel ESK Printing';
+
+      // Simulasi Pemerhatian Imej AI
+      obsBox.classList.remove('hidden');
+      obsList.innerHTML = `
+        <li>Subjek dikesan: <strong>${subjek}</strong></li>
+        <li>Kualiti cetakan tajam, warna kontra tinggi & kemas</li>
+        <li>Sedia untuk tempahan pukal (kafe, sekolah, kelab & bisnes)</li>
+      `;
+
+      let generated = '';
+      if (currentAITone === 'kelantan') {
+        generated = `🔥 BERES STESEN CETAK HARI NI! BOSS NAK BUAT UNIFORM JUGA KE? 🔥\n\nTengoklah tu, kemaih molek hasil kerja team kita siapkan tempahan (${subjek}). Warna naik comel atas kain, tajam tak pecah langsung!\n\nBagi saing-saing yang berniaga kedai makan, kafe, barbershop, atau nak buat baju family day & kelab, tak payah pening kepala cari kedai jauh. Stesen kita di Ketereh sedia terima tempahan pukal, comel rupa, puas hati harga!\n\nNak kami tolong setelkan design team demo? Cepat-cepat roger kat WhatsApp di bawah jah! 👇`;
+      } else {
+        generated = `✨ PERKHIDMATAN PERCETAKAN UNIFORM & PAKAIAN BERKUALITI TINGGI ✨\n\nPaparan proses pengeluaran bagi tempahan (${subjek}) oleh pasukan produksi Empayar S Printing. Kami memastikan setiap cetakan mempunyai ketajaman warna yang konsisten, kemas, dan tahan lama.\n\nSesuai untuk keperluan:\n✅ Uniform Kafe, Restoran & Perniagaan\n✅ Baju Korporat, Kelab & Persatuan\n✅ Pakaian Hari Keluarga & Acara Rasmi\n\nHubungi kami hari ini untuk sebut harga tempahan pukal dan khidmat nasihat reka bentuk percuma.`;
+      }
+
+      if (appSettings.autoAppend) {
+        generated += `\n\n${getWhatsAppBlock()}\n\n${appSettings.hashtags}`;
+      }
+
+      outputEl.value = generated;
+      showToast(`Ayat gaya ${currentAITone === 'kelantan' ? 'Santai Kelantan' : 'Formal'} siap dijana!`);
+    }
+
+    function copyAICaption() {
+      const text = document.getElementById('ai-output-textarea').value;
+      if (!text.trim()) return showToast('Tiada kapsyen untuk disalin.');
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Kapsyen AI berjaya disalin!');
+      });
+    }
+
+    function sendAICaptionToModal() {
+      const caption = document.getElementById('ai-output-textarea').value.trim();
+      const context = document.getElementById('ai-context-input').value.trim();
+      if (!caption) {
+        showToast('Sila klik "Jana Ayat Iklan AI" dahulu.');
+        return;
+      }
+      openPostModal({
+        title: context ? `Kempen: ${context}` : 'Iklan Cetakan & Pakaian ESK Printing',
+        caption: caption,
+        image: currentAIImageBase64
+      });
+    }
+
+    // --- UTILITIES ---
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2800);
+    }
+
+    function resetDemoData() {
+      if (!confirm('Set semula semua jadual dan tetapan kepada contoh asal?')) return;
+      localStorage.removeItem('esk_settings');
+      localStorage.removeItem('esk_checklist');
+      localStorage.removeItem('esk_posts');
+      location.reload();
+    }
+  </script>
+</body>
+</html>
