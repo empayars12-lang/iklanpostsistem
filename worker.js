@@ -1,4 +1,4 @@
-// Cloudflare Worker: AI percuma menggunakan model Llama 3.2
+// Cloudflare Worker: Gemini 1.5 Flash (Boleh baca teks & gambar secara percuma)
 export default {
   async fetch(request, env) {
     const cors = {
@@ -20,22 +20,60 @@ export default {
 
     try {
       const body = await request.json();
+      
+      // API Key Google AI Studio anda
+      const GEMINI_API_KEY = "AQ.Ab8RN6IpTXApk1nfk1ToS5jmbXj-IWSpQgWXG0fNJuQ1yRwZWg";
 
-      // Memanggil model percuma Cloudflare AI (Llama 3.2 3B Instruct)
-      const aiResponse = await env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
-        messages: [
-          { 
-            role: "system", 
-            content: "Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan. Pulangkan jawapan ringkas." 
-          },
-          { 
-            role: "user", 
-            content: `Servis: ${body.service || 'Cetak Baju'}\nMasalah: ${body.problem || 'Mahu buat baju custom'}\nTulis ayat iklan pendek untuk WhatsApp.` 
+      const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
+Servis: ${body.service || 'Cetak Baju'}
+Masalah Pelanggan: ${body.problem || 'Mahu buat baju custom'}
+${body.product ? `Produk: ${body.product}` : ''}
+
+Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempah baju.`;
+
+      let contents = [];
+
+      // Jika ada gambar dimuat naik, Gemini akan analisis gambar tersebut bersama teks
+      if (body.image) {
+        const base64Data = body.image.split(',')[1] || body.image;
+        contents = [
+          {
+            parts: [
+              { text: promptText + " Sila teliti gambar produk/baju ini dan masukkan butiran visual (seperti warna atau jenis cetakan) ke dalam ayat iklan." },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: base64Data
+                }
+              }
+            ]
           }
-        ]
+        ];
+      } else {
+        contents = [
+          {
+            parts: [{ text: promptText }]
+          }
+        ];
+      }
+
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+      const response = await fetch(geminiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents })
       });
 
-      return new Response(JSON.stringify({ wa: aiResponse.response || "Sila cuba lagi" }), {
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message || "Ralat Gemini API");
+      }
+
+      const waText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sila cuba lagi";
+
+      return new Response(JSON.stringify({ wa: waText }), {
         headers: { "Content-Type": "application/json", ...cors }
       });
 
