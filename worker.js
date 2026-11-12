@@ -21,8 +21,8 @@ export default {
     try {
       const body = await request.json();
       
-      // API Key Google AI Studio anda
-      const GEMINI_API_KEY = "AQ.Ab8RN6IpTXApk1nfk1ToS5jmbXj-IWSpQgWXG0fNJuQ1yRwZWg";
+      // SALIN & TAMPAL KUNCI LENGKAP YANG BERMULA DENGAN 'AIzaSy...' DI SINI
+      const GEMINI_API_KEY = "MASUKKAN_KUNCI_AIzaSy_LENGKAP_DI_SINI";
 
       const promptText = `Anda ialah penulis iklan (copywriter) bahasa Melayu untuk ESK Printing / Empayar S Printing, kedai cetakan baju (DTF & silk screen) di Ketereh, Kelantan.
 Servis: ${body.service || 'Cetak Baju'}
@@ -33,7 +33,6 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
 
       let contents = [];
 
-      // Jika ada gambar dimuat naik, Gemini akan analisis gambar tersebut bersama teks
       if (body.image) {
         const base64Data = body.image.split(',')[1] || body.image;
         contents = [
@@ -57,7 +56,7 @@ Tulis 1 ayat iklan pendek & menarik untuk WhatsApp bagi mengajak pelanggan tempa
         ];
       }
 
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
 
       const response = await fetch(geminiUrl, {
         method: "POST",
