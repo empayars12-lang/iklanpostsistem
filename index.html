@@ -59,7 +59,7 @@ h2{font-size:18px;margin:4px 0 10px}h3{font-size:15px;margin:6px 0}
 .post img.th{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin:4px 0}
 .acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
 .acts .btn{padding:0 6px;font-size:13px}
-.mini{display:flex;justify-around;margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+.mini{display:flex;justify-content:space-around;margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
 .mini button{padding:8px 10px;font-size:13px;color:var(--mut);font-weight:600}.mini .d{color:var(--red)}
 .empty{text-align:center;padding:26px 14px;color:var(--mut);border:2px dashed var(--line);border-radius:18px;margin-bottom:12px;background:#fff}
 .check{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;font-size:14px}.check:last-child{border:0}.check.d span{text-decoration:line-through;color:#94a3b8}
@@ -82,7 +82,7 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
 .ov{position:fixed;inset:0;z-index:50;background:#0f172a99;display:none;align-items:flex-end;justify-content:center}.ov.show{display:flex}
 .sheet{background:#fff;width:100%;max-width:680px;max-height:94vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:6px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(40px);opacity:.4}}
-.sheet .grab{width:42px;height:5px;border-radius:99px;background:#cbd5e1;margin:6px auto 10px}
+.sheet .grab{width:42px;height:5px;border-radius:9px;background:#cbd5e1;margin:6px auto 10px}
 .sheet .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .sticky{position:sticky;bottom:-20px;background:#fff;padding:12px 0 4px;display:flex;gap:8px;margin-top:14px}
 #toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:90%;text-align:center}
@@ -155,9 +155,27 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
     <div class="sw"><span>Sertakan link WhatsApp</span><input type="checkbox" id="ai-wa" checked></div>
     <div class="sw" style="padding-top:0"><span>Sertakan hashtag</span><input type="checkbox" id="ai-tags" checked></div>
 
-    <button class="btn pri blk" id="btn-ai" data-act="aiwrite" style="margin-bottom:8px">🤖 Tulis Iklan dengan Cloudflare AI</button>
-    <p class="muted" style="margin:0 2px 10px">AI percuma Cloudflare akan menjana ayat iklan berdasarkan servis & masalah pilihan anda.</p>
+    <button class="btn pri blk" id="btn-ai" data-act="aiwrite" style="margin-bottom:8px">📷 Tulis dengan AI dari gambar</button>
+    <p class="muted" style="margin:0 2px 10px">AI melihat gambar di langkah 5 dan menulis ayat ajakan beli. Perlu internet.</p>
     <button class="btn grn blk" data-act="gen">✨ Jana Ayat Iklan (templat, percuma)</button>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">📣 Bank Ayat Ajakan (CTA)</h2>
+    <p class="muted" style="margin:0 0 8px">Banyak ayat ajak beli sekali gus. Ikut gaya bahasa di langkah 3. Percuma, tak perlu internet.</p>
+    <div class="chips scroll" id="g-cta"></div>
+    <button class="btn grn blk" style="margin-top:10px" data-act="gencta">🔥 Jana 10 Ayat Ajakan</button>
+    <div id="cta-list" style="margin-top:10px"></div>
+    <button class="btn blk hidden" id="cta-all" data-act="ctaall">📋 Salin semua ayat</button>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">🧠 AI Asas (Pintar & Belajar)</h2>
+    <p class="muted" style="margin:0 0 10px">Gabung hook, masalah, penyelesaian dan ajakan dalam susunan berbeza, jadi ayat penuh berlainan setiap kali. Tekan ❤️ pada ayat yang staf suka, AI akan lebih kerap guna bahagian ayat itu. Ikut pilihan langkah 1 hingga 4.</p>
+    <button class="btn pri blk" data-act="gensmart">🧠 Jana 5 Ayat Penuh</button>
+    <div id="smart-list" style="margin-top:10px"></div>
+    <div class="muted" id="learn-info" style="margin-top:4px"></div>
+    <button class="btn sm hidden" id="btn-reset-learn" data-act="resetlearn" style="margin-top:6px">Padam pembelajaran AI</button>
   </div>
 
   <div id="ai-results" class="hidden">
@@ -193,11 +211,11 @@ nav .fab{background:var(--brand);color:#fff;width:58px;height:58px;border-radius
     <button class="btn grn blk" style="margin-top:12px" data-act="savesettings">Simpan Tetapan</button>
   </div>
   <div class="card">
-    <h2 style="margin-top:0">🤖 Cloudflare AI Worker</h2>
-    <p class="muted" style="margin-top:0">Diset secara automatik ke Worker percuma Cloudflare anda.</p>
+    <h2 style="margin-top:0">🤖 AI dari gambar</h2>
+    <p class="muted" style="margin-top:0">Isi sekali sahaja. Alamat dan kata laluan diberi oleh pemilik (lihat panduan pemasangan Worker).</p>
     <label class="f" style="margin-top:0">Alamat AI (URL Worker)</label>
-    <input id="st-ai-url" type="url" placeholder="https://dawn-shadow-826c.empayars12.workers.dev">
-    <label class="f">Kata laluan app (pilihan)</label>
+    <input id="st-ai-url" type="url" placeholder="https://esk-ai.namaanda.workers.dev">
+    <label class="f">Kata laluan app</label>
     <input id="st-ai-key" type="password" autocomplete="off">
   </div>
   <div class="card">
@@ -306,7 +324,7 @@ async function shareText(text,img){
 function compress(file,max=900,q=.72){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height));const c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};i.onerror=rej;i.src=r.result};r.onerror=rej;r.readAsDataURL(file)})}
 
 /* ---------- Data ---------- */
-const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false,aiUrl:'https://dawn-shadow-826c.empayars12.workers.dev',aiKey:''};
+const DEF_SET={waPhone:'60139727212',waCta:'📲 Nak tempah atau tanya harga? Klik terus WhatsApp:',waText:'Hai ESK Printing, saya nak tanya pakej printing / pakaian',hashtags:'#ESKPrinting #EmpayarSPrinting #CetakBajuKelantan #SilkScreenMalaysia #DTFPrinting #Ketereh',staffName:'',remind:false,aiUrl:'',aiKey:''};
 const DEF_CHECK=[
  {id:1,text:'Sediakan blok & dakwat cetak DTF / Silk Screen',done:false},
  {id:2,text:'Semak jadual post pagi, tengah hari & malam',done:false},
@@ -458,52 +476,60 @@ const PROBLEMS={
   h:{kel:['Tempah baju, last minit baru tau tak sempat siap? Jange jadi macam tu 😮‍💨','Majlis dah dekat, baju belum siap lagi? Kita settle awal-awal.'],
      std:['Tempah baju, last minit baru tahu tak sempat siap? Tak perlu risau lagi.','Majlis dah dekat tapi baju belum siap? Jom selesaikan awal.'],
      for:['Bimbang tempahan pakaian lewat disiapkan sebelum majlis anda?','Tarikh majlis semakin hampir. Sudahkah pakaian anda ditempah?']},
+  s:'tempah baju tapi lambat siap',
   pain:'Paling stres bila tarikh siap tak jelas dan nak tanya pun lambat dibalas.',
   fix:t=>`Di ESK, tarikh siap dimaklumkan awal${t?` (anggaran ${t})`:''} sebelum anda buat keputusan, jadi anda boleh rancang dengan tenang.`},
  design:{l:'Tak tahu nak design',
   h:{kel:['Ada idea nak buat baju, tapi tak tahu nak susun design macam mana? Senang je 👇','Logo ada, tapi tak pasti kemas ke tak atas baju? Hantar je, kita tolong tengok.'],
      std:['Ada idea nak buat baju tapi tak tahu mula dari mana?','Logo dah ada tapi tak pasti nampak kemas atas baju? Hantar je kepada kami.'],
      for:['Mempunyai idea reka bentuk tetapi tidak pasti cara menyusunnya?','Perlukan bantuan menyediakan reka bentuk sebelum dicetak?']},
+  s:'nak buat baju tapi tak tahu nak design',
   pain:'Ramai tangguh tempahan sebab ingat design kena siap sempurna dulu.',
   fix:()=>'Tak perlu siap. Hantar logo, gambar rujukan atau idea kasar di WhatsApp, kami bantu semak supaya cetakan nampak kemas sebelum cetak.'},
  kuantiti:{l:'Kuantiti sikit',
   h:{kel:['Nak buat 5-10 helai je, tapi kedai lain suruh minimum banyak? Tanya kami dulu 👌','Sikit pun boleh, ramai pun boleh. Tanya je dulu.'],
      std:['Nak cetak sikit je tapi kedai lain letak minimum order tinggi?','Kuantiti kecil atau pukal, tanya dulu, tak rugi apa.'],
      for:['Bimbang kuantiti tempahan anda terlalu sedikit untuk dicetak?','Kuantiti kecil atau pukal, kami cadangkan kaedah yang paling sesuai.']},
+  s:'nak cetak sikit tapi kena minimum order yang tinggi',
   pain:'Banyak kedai letak minimum order tinggi, last-last tak jadi tempah.',
   fix:()=>'Beritahu berapa helai anda perlukan. Kami cadangkan kaedah paling jimat (DTF untuk kuantiti kecil, silk screen untuk pukal).'},
  harga:{l:'Bajet terhad',
   h:{kel:['Bajet tak banyak tapi nak baju nampak pro? Ada cara 💡','Takut harga naik bila dah mula? Minta sebut harga dulu.'],
      std:['Bajet terhad tapi nak baju nampak profesional?','Takut kos tambahan bila dah mula tempah? Minta sebut harga dulu.'],
      for:['Mencari pilihan cetakan yang sesuai dengan bajet anda?','Ingin mengetahui jumlah kos penuh sebelum membuat tempahan?']},
+  s:'nak baju nampak profesional tapi bajet terhad',
   pain:'Ramai risau kos berubah-ubah selepas bayar deposit.',
   fix:()=>'Beritahu bajet & kuantiti, kami cadangkan pilihan yang sesuai dan sebut harga dahulu supaya anda tahu jumlahnya sebelum tempah.'},
  pudar:{l:'Cetakan pudar / pecah',
   h:{kel:['Baju baru basuh dua tiga kali, cetakan dah pecah? Rugi doh 😩','Nak cetakan tahan basuh? Pilih kaedah yang betul dari awal.'],
      std:['Baju baru beberapa kali basuh, cetakan dah pecah atau pudar?','Nak cetakan yang tahan lama? Kaedah cetak kena ikut jenis kain.'],
      for:['Pernah mengalami cetakan pakaian pudar atau tertanggal selepas beberapa kali basuhan?','Ketahanan cetakan bergantung pada kaedah dan jenis kain yang dipilih.']},
+  s:'alami cetakan baju pudar selepas beberapa kali basuh',
   pain:'Duit dah keluar, tapi baju tak tahan lama. Memang menyakitkan hati.',
   fix:()=>'Kami cadangkan kaedah cetak ikut jenis kain & kegunaan (DTF atau silk screen) supaya hasilnya lebih tahan basuh.'},
  kedai:{l:'Susah cari kedai dipercayai',
   h:{kel:['Dah cuba banyak kedai tapi balas lambat atau hilang senyap? 😤','Nak kedai yang balas WhatsApp & jelas dari awal? Ni dia.'],
      std:['Dah cuba banyak kedai tapi mesej lambat berbalas atau hilang senyap?','Nak kedai printing yang balas laju dan jelas dari awal?'],
      for:['Mencari pembekal cetakan yang responsif dan telus?','Perlukan khidmat cetakan dengan komunikasi yang jelas dari awal hingga siap?']},
+  s:'cari kedai printing tapi mesej tak berbalas',
   pain:'Mesej tak berbalas dan maklumat tak jelas buat tempahan jadi serabut.',
   fix:()=>'Mesej kami di WhatsApp. Semua butiran (design, harga, tarikh siap) dijelaskan terus supaya anda tahu apa yang berlaku.'},
  seragam:{l:'Susah urus baju satu team',
   h:{kel:['Nak baju seragam satu team tapi pening nak kumpul saiz & nama? 🤯','Kelas, kelab, syarikat, nak baju sama, jange la serabut.'],
      std:['Nak baju seragam satu team tapi pening kumpul saiz & nama?','Kelas, kelab atau syarikat, nak baju sama tanpa serabut.'],
      for:['Menguruskan tempahan pakaian seragam untuk pasukan anda?','Perlukan pakaian seragam untuk organisasi atau program anda?']},
+  s:'nak seragam satu team tapi pening kumpul saiz',
   pain:'Kumpul saiz, nama dan nombor ramai orang memang memenatkan.',
   fix:()=>'Hantar senarai nama & saiz di WhatsApp, kami susun dan terangkan langkah seterusnya supaya anda tak perlu uruskan semuanya sendiri.'}};
 const URG={none:'',slot:'⏳ Slot tempahan minggu ini terhad.',today:'🔥 Tawaran tamat hari ini.',weekend:'🔥 Tawaran sehingga hujung minggu ini.'};
 const CTA={kel:'Jange tunggu lama. Mesej kami sekarang, bagi tau idea & berapa helai 👇',std:'Jangan tunggu lama. Mesej kami sekarang, beritahu idea & kuantiti anda 👇',for:'Hubungi kami melalui WhatsApp untuk mendapatkan sebut harga 👇'};
-let ai={service:'korporat',problem:'lambat',tone:'kel',seed:0,img:''};
+let ai={service:'korporat',problem:'lambat',tone:'kel',seed:0,img:'',cta:'all'};
 
 function renderChips(){
   $('#g-service').innerHTML=SERVICES.map(s=>`<button class="chip ${ai.service===s.id?'on':''}" data-k="service" data-v="${s.id}">${s.icon} ${s.label}</button>`).join('');
   $('#g-problem').innerHTML=Object.entries(PROBLEMS).map(([k,p])=>`<button class="chip ${ai.problem===k?'on':''}" data-k="problem" data-v="${k}">${p.l}</button>`).join('');
   $$('#g-tone button').forEach(b=>b.classList.toggle('on',b.dataset.v===ai.tone));
+  $('#g-cta').innerHTML=`<button class="chip ${ai.cta==='all'?'on':''}" data-k="cta" data-v="all">Semua</button>`+Object.entries(CTAB).map(([k,c])=>`<button class="chip ${ai.cta===k?'on':''}" data-k="cta" data-v="${k}">${c.l}</button>`).join('');
 }
 function waBlock(){const ph=settings.waPhone.replace(/\D/g,''),tx=settings.waText?'/'+encodeURIComponent(settings.waText):'';return `${settings.waCta}\nhttps://wasap.my/${ph}${tx}`}
 function gen(bump){
@@ -532,27 +558,120 @@ function gen(bump){
 function autosize(el){el.style.height='auto';el.style.height=Math.max(el.scrollHeight+4,el.id==='o-main'?260:70)+'px'}
 function countMain(){$('#o-count').textContent=`${$('#o-main').value.length} aksara`}
 
-/* ---------- AI dari Cloudflare Worker Percuma ---------- */
+/* ---------- Bank Ayat CTA ---------- */
+const CTAB={
+ msg:{l:'Ajak mesej',
+  kel:['Mesej kami sekarang, tanya je dulu, tak rugi apa 👇','Ada soalan? Roger kami kat WhatsApp, kita bincang sama-sama 👇','Jange simpan idea tu dalam kepala je. Hantar kat WhatsApp, kita tengok sama 👇','Klik WhatsApp, taip "nak tanya" je pun dah cukup 👇','Tak pasti nak pilih yang mana? Tanya kami dulu, kami cadangkan 👇','Nak tau lebih? Mesej kami, kita jelaskan satu-satu 👇'],
+  std:['Mesej kami sekarang, tanya dulu, tak rugi apa 👇','Ada soalan? Terus WhatsApp kami, kita bincang sama-sama 👇','Jangan simpan idea tu sendiri. Hantar di WhatsApp, kami tolong tengok 👇','Klik WhatsApp, taip "nak tanya" pun dah cukup 👇','Tak pasti pilih yang mana? Tanya kami dulu, kami cadangkan 👇','Nak tahu lebih lanjut? Mesej kami, kami terangkan satu-satu 👇'],
+  for:['Hubungi kami melalui WhatsApp untuk sebarang pertanyaan 👇','Sila mesej kami, kami sedia membantu menjelaskan pilihan anda 👇','Hantarkan idea atau pertanyaan anda melalui WhatsApp 👇','Tidak pasti pilihan yang sesuai? Hubungi kami untuk cadangan 👇','Untuk maklumat lanjut, sila hubungi kami di WhatsApp 👇','Ajukan soalan anda kepada kami melalui WhatsApp 👇']},
+ order:{l:'Ajak tempah',
+  kel:['Dah ready nak tempah? Mesej kami, kita mulakan 👇','Nak baju siap untuk program demo? Tempah dari sekarang 👇','Jange tunggu lama, hantar design demo kat WhatsApp, kita proses 👇','Tempah senang je, mesej kami dan bagi tau berapa helai 👇','Satu mesej je untuk mula tempah. Klik sekarang 👇','Nak mula tempahan? Roger kami, kita atur sama-sama 👇'],
+  std:['Dah bersedia nak tempah? Mesej kami, kita mulakan 👇','Ada program akan datang? Tempah dari sekarang 👇','Jangan tunggu lama, hantar design di WhatsApp, kami proses 👇','Tempah senang je, mesej kami dan beritahu kuantiti 👇','Satu mesej je untuk mula tempah. Klik sekarang 👇','Nak mula tempahan? Hubungi kami, kita atur bersama 👇'],
+  for:['Untuk membuat tempahan, sila hubungi kami melalui WhatsApp 👇','Mulakan tempahan anda dengan menghantar mesej kepada kami 👇','Sila nyatakan kuantiti dan reka bentuk melalui WhatsApp untuk memulakan tempahan 👇','Tempah lebih awal untuk perancangan yang lebih teratur. Hubungi kami 👇','Hubungi kami sekarang untuk memulakan proses tempahan 👇','Klik WhatsApp untuk memulakan tempahan anda 👇']},
+ quote:{l:'Minta sebut harga',
+  kel:['Nak tau harga? Hantar kuantiti & idea, kami sebut harga dulu 👇','Tak payah teka-teka harga. Mesej kami, kami bagi sebut harga jelas 👇','Bagi tau berapa helai, kami kira dan bagi harga dulu sebelum demo putus 👇','Nak banding harga? Minta sebut harga kami dulu, free 👇','Hantar logo dan kuantiti, kami balik dengan sebut harga 👇','Tanya harga je pun takpe, mesej kami sekarang 👇'],
+  std:['Nak tahu harga? Hantar kuantiti & idea, kami sebut harga dahulu 👇','Tak perlu teka harga. Mesej kami, kami beri sebut harga yang jelas 👇','Beritahu berapa helai, kami kira dan beri harga sebelum anda putuskan 👇','Nak banding harga? Minta sebut harga kami dahulu 👇','Hantar logo dan kuantiti, kami balas dengan sebut harga 👇','Tanya harga pun tak apa, mesej kami sekarang 👇'],
+  for:['Untuk sebut harga, sila nyatakan kuantiti dan reka bentuk melalui WhatsApp 👇','Dapatkan sebut harga yang jelas sebelum membuat keputusan 👇','Hubungi kami untuk sebut harga mengikut keperluan anda 👇','Hantarkan logo dan kuantiti, kami akan sediakan sebut harga 👇','Sila mohon sebut harga melalui WhatsApp 👇','Mohon sebut harga anda sekarang 👇']},
+ design:{l:'Hantar design',
+  kel:['Ada logo atau idea kasar? Hantar je kat WhatsApp, kami tolong kemaskan 👇','Tak reti design? Takpe, bagi gambar rujukan, kita susun sama-sama 👇','Hantar design demo sekarang, kami semak sebelum cetak 👇','Idea baru separuh jalan pun boleh hantar. Kita tengok sama 👇','Ada contoh baju yang demo suka? Snap dan hantar kat kami 👇','Hantar logo (gambar pun boleh) kat WhatsApp, kita mula dari situ 👇'],
+  std:['Ada logo atau idea kasar? Hantar di WhatsApp, kami bantu kemaskan 👇','Tak pandai design? Tak apa, beri gambar rujukan, kita susun bersama 👇','Hantar design anda sekarang, kami semak sebelum cetak 👇','Idea separuh jalan pun boleh dihantar. Kita tengok bersama 👇','Ada contoh baju yang anda suka? Tangkap gambar dan hantar kepada kami 👇','Hantar logo (gambar pun boleh) di WhatsApp, kita mula dari situ 👇'],
+  for:['Hantarkan logo atau idea anda melalui WhatsApp untuk semakan reka bentuk 👇','Tiada reka bentuk? Sila hantar gambar rujukan, kami bantu menyusunnya 👇','Kami akan menyemak reka bentuk anda sebelum proses cetakan 👇','Idea kasar pun diterima. Hantar melalui WhatsApp 👇','Sertakan gambar contoh yang anda gemari untuk rujukan kami 👇','Hantar logo anda dan kami akan mulakan dari situ 👇']},
+ time:{l:'Tempah awal',
+  kel:['Jange tunggu last minit baru nak tempah. Mesej kami dari sekarang 👇','Majlis dah dekat? Settle awal-awal, mesej kami hari ni 👇','Makin awal demo tempah, makin senang kita atur. Klik WhatsApp 👇','Nak elak kelam-kabut? Tempah dari sekarang 👇','Rancang awal, hati tenang. Mesej kami hari ni 👇','Hari ni mula tanya, esok tak risau. Klik WhatsApp 👇'],
+  std:['Jangan tunggu saat akhir untuk tempah. Mesej kami dari sekarang 👇','Majlis dah dekat? Uruskan awal, mesej kami hari ini 👇','Makin awal tempah, makin mudah kami atur jadual. Klik WhatsApp 👇','Nak elak kelam-kabut? Tempah dari sekarang 👇','Rancang awal, hati tenang. Mesej kami hari ini 👇','Mula tanya hari ini, esok tak perlu risau. Klik WhatsApp 👇'],
+  for:['Kami mengesyorkan anda menempah lebih awal untuk perancangan yang teratur 👇','Tarikh majlis semakin hampir? Hubungi kami hari ini 👇','Tempahan awal memudahkan perancangan kedua-dua pihak. Hubungi kami 👇','Elakkan tergesa-gesa dengan membuat tempahan lebih awal 👇','Sila hubungi kami hari ini untuk merancang tempahan anda 👇','Mulakan perbincangan tempahan anda bersama kami hari ini 👇']}
+};
+let ctaList=[];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function genCta(){
+  const T=ai.tone,cat=ai.cta||'all';
+  let pool=[];
+  (cat==='all'?Object.keys(CTAB):[cat]).forEach(k=>pool.push(...CTAB[k][T]));
+  pool=shuffle(pool);
+  const off=$('#ai-offer').value.trim(),urg=URG[$('#ai-urg').value],extra=[];
+  if(off)extra.push(`🎁 ${off}. Mesej kami sekarang untuk tuntut 👇`);
+  if(urg)extra.push(`${urg} Mesej kami sebelum terlepas 👇`);
+  ctaList=[...extra,...pool].slice(0,10);
+  $('#cta-list').innerHTML=ctaList.map((t,i)=>`<div class="out"><div style="white-space:pre-line;font-size:14px;margin-bottom:8px">${esc(t)}</div><div class="row"><button class="btn sm" data-act="ctacopy" data-i="${i}">Salin</button><button class="btn sm" data-act="ctawa" data-i="${i}">Salin + link WhatsApp</button></div></div>`).join('');
+  $('#cta-all').classList.remove('hidden');
+}
+
+/* ---------- AI Asas (SMART) ---------- */
+/*SMART_START*/
+let FAV=LS('esk_learn',{});
+const HOOKT={
+ kel:[s=>`Pernah ${s}? Demo bukan sorang je 😅`,s=>`Ramai pelanggan ${s}. Settle senang je 👇`,s=>`${s[0].toUpperCase()+s.slice(1)}? Jange pening, kita ada cara.`],
+ std:[s=>`Pernah ${s}? Anda bukan seorang.`,s=>`Ramai pelanggan ${s}. Ada cara mudah 👇`,s=>`${s[0].toUpperCase()+s.slice(1)}? Tak perlu pening.`],
+ for:[s=>`Pernahkah anda ${s}?`,s=>`Ramai pelanggan berdepan situasi ini: ${s}. Berikut penyelesaiannya.`,s=>`${s[0].toUpperCase()+s.slice(1)}? Kami boleh membantu.`]};
+const STEPS={
+ kel:[(n,t)=>`Senang je nak tempah ${n}:\n1️⃣ Hantar idea / logo / gambar rujukan kat WhatsApp\n2️⃣ Kami bagi sebut harga${t?` & tempoh siap (${t})`:''}\n3️⃣ Demo sahkan design, kami terus cetak`,
+      (n,t)=>`Cara tempah ${n}: hantar logo → dapat sebut harga${t?` (siap ${t})`:''} → sahkan design → kami cetak. Habis cerita 👌`,
+      (n,t)=>`Tak rumit pun. Mesej kami, bagi tau nak berapa helai, selebihnya kami uruskan${t?` (anggaran siap ${t})`:''}.`],
+ std:[(n,t)=>`Senang je nak tempah ${n}:\n1️⃣ Hantar idea / logo / gambar rujukan di WhatsApp\n2️⃣ Kami beri sebut harga${t?` & tempoh siap (${t})`:''}\n3️⃣ Anda sahkan design, kami terus cetak`,
+      (n,t)=>`Cara tempah ${n}: hantar logo → terima sebut harga${t?` (siap ${t})`:''} → sahkan design → kami cetak.`,
+      (n,t)=>`Tak rumit. Mesej kami, beritahu kuantiti, selebihnya kami uruskan${t?` (anggaran siap ${t})`:''}.`],
+ for:[(n,t)=>`Langkah menempah ${n}:\n1. Hantar idea / logo / gambar rujukan melalui WhatsApp\n2. Terima sebut harga${t?` dan tempoh siap (${t})`:''}\n3. Sahkan reka bentuk, kami teruskan pencetakan`,
+      (n,t)=>`Proses tempahan ${n}: hantar logo, terima sebut harga${t?` (tempoh siap ${t})`:''}, sahkan reka bentuk, kemudian pencetakan bermula.`,
+      (n,t)=>`Proses ringkas. Hubungi kami dengan kuantiti yang diperlukan, kami uruskan langkah seterusnya${t?` (anggaran siap ${t})`:''}.`]};
+const STRUCTS=[['hook','pain','fix','steps','aud','cta'],['hook','fix','cta'],['hook','pain','fix','cta'],['hook','fix','steps','cta'],['hook','aud','fix','cta']];
+function pickW(arr,keyf){
+  const w=arr.map((x,i)=>1+4*(FAV[keyf(x,i)]||0)),tot=w.reduce((a,b)=>a+b,0);
+  let r=Math.random()*tot;for(let i=0;i<arr.length;i++){r-=w[i];if(r<=0)return i}return arr.length-1;
+}
+function smartCore(S,P,T,o,n){
+  const hooks=[...P.h[T],...HOOKT[T].map(f=>f(P.s))];
+  const ctas=[];Object.keys(CTAB).forEach(k=>{if(k==='time'&&P!==PROBLEMS.lambat)return;ctas.push(...CTAB[k][T])});
+  const sname=(S.id==='lain'&&o.prod)?o.prod:S.name;
+  const offBlock=[o.off?`🎁 ${o.off}`:'',o.urg].filter(Boolean).join('\n');
+  const seen=new Set(),out=[];
+  for(let tries=0;tries<80&&out.length<n;tries++){
+    const hi=pickW(hooks,x=>x),ci=pickW(ctas,x=>x),si=pickW(STEPS[T],(x,i)=>`st${T}${i}`);
+    let st=STRUCTS[Math.floor(Math.random()*STRUCTS.length)];
+    if(T==='for')st=st.filter(k=>k!=='pain');
+    const m={hook:hooks[hi],pain:P.pain,fix:P.fix(o.tmp),steps:STEPS[T][si](sname,o.tmp),aud:`Sesuai untuk ${S.aud}.`,cta:ctas[ci]};
+    const parts=[];st.forEach(k=>{if(k==='cta'&&offBlock)parts.push(offBlock);parts.push(m[k])});
+    if(o.wa)parts.push(o.wa);if(o.tags)parts.push(o.tags);
+    const text=parts.join('\n\n');
+    if(seen.has(text))continue;seen.add(text);
+    out.push({text,keys:[hooks[hi],ctas[ci],`st${T}${si}`]});
+  }
+  return out;
+}
+/*SMART_END*/
+let smartList=[];
+function learnInfo(){const n=Object.keys(FAV).length;$('#learn-info').textContent=n?`AI telah belajar daripada ${n} bahagian ayat kegemaran.`:'';$('#btn-reset-learn').classList.toggle('hidden',!n)}
+function genSmart(){
+  const S=SERVICES.find(x=>x.id===ai.service),P=PROBLEMS[ai.problem];
+  smartList=smartCore(S,P,ai.tone,{prod:$('#ai-prod').value.trim(),tmp:$('#ai-time').value.trim(),off:$('#ai-offer').value.trim(),urg:URG[$('#ai-urg').value],
+    wa:$('#ai-wa').checked?waBlock():'',tags:$('#ai-tags').checked?settings.hashtags:''},5);
+  $('#smart-list').innerHTML=smartList.map((x,i)=>`<div class="out"><div style="white-space:pre-line;font-size:14px;margin-bottom:8px">${esc(x.text)}</div><div class="row" style="flex-wrap:wrap"><button class="btn sm" data-act="smartcopy" data-i="${i}">Salin</button><button class="btn sm" data-act="smartfav" data-i="${i}">❤️ Suka</button><button class="btn sm" data-act="smartsched" data-i="${i}">🗓 Jadual</button></div></div>`).join('');
+  learnInfo();
+}
+
+/* ---------- AI dari gambar ---------- */
+const TONE_NAME={kel:'kelantan',std:'santai',for:'formal'};
 async function aiWrite(btn){
-  const url=settings.aiUrl||'https://dawn-shadow-826c.empayars12.workers.dev';
+  if(!settings.aiUrl)return toast('Isi alamat AI di Tetapan dahulu');
+  if(!ai.img)return toast('Muat naik gambar dahulu (langkah 5)');
   if(!navigator.onLine)return toast('Tiada internet. Guna butang templat');
   const old=btn.textContent;btn.disabled=true;btn.textContent='⏳ AI sedang menulis...';
-  const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),30000);
+  const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),45000);
   try{
-    const r=await fetch(url,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','X-App-Key':settings.aiKey||''},
-      body:JSON.stringify({service:SERVICES.find(x=>x.id===ai.service).name,problem:PROBLEMS[ai.problem].l})});
+    const r=await fetch(settings.aiUrl,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','X-App-Key':settings.aiKey||''},
+      body:JSON.stringify({image:ai.img,service:SERVICES.find(x=>x.id===ai.service).name,problem:PROBLEMS[ai.problem].l,tone:TONE_NAME[ai.tone],
+        product:$('#ai-prod').value.trim(),time:$('#ai-time').value.trim(),offer:$('#ai-offer').value.trim(),urgency:URG[$('#ai-urg').value]})});
     const d=await r.json().catch(()=>({}));
     if(!r.ok||d.error)throw new Error(d.error||('ralat '+r.status));
     const useWa=$('#ai-wa').checked,wa=useWa?waBlock():'',tags=$('#ai-tags').checked?settings.hashtags:'';
     const J=a=>a.filter(Boolean).join('\n\n');
     $('#o-wa').value=J([d.wa,wa]);
-    $('#o-reel').value=J([d.wa,useWa?`💬 WhatsApp: wasap.my/${settings.waPhone.replace(/\D/g,'')}`:'',tags]);
-    $('#o-vid').value=`🎬 IDEA VIDEO 15 SAAT\n\n0–3s: Tunjuk produk.\n3–10s: ${d.wa}\n10–15s: Mesej WhatsApp kami.`;
-    $('#o-main').value=J([d.wa,wa,tags]);
+    $('#o-reel').value=J([d.reel,useWa?`💬 WhatsApp: wasap.my/${settings.waPhone.replace(/\D/g,'')}`:'',tags]);
+    $('#o-vid').value=d.video||'';
+    $('#o-main').value=J([d.main,wa,tags]);
     $('#ai-results').classList.remove('hidden');
     $$('#ai-results textarea').forEach(autosize);countMain();
     $('#ai-results').scrollIntoView({behavior:'smooth',block:'start'});
-    toast('✅ AI percuma siap menulis.');
+    toast('✅ AI siap menulis. Semak sebelum post');
   }catch(e){toast('AI gagal: '+(e.name==='AbortError'?'masa tamat':e.message)+'. Guna butang templat')}
   finally{clearTimeout(to);btn.disabled=false;btn.textContent=old}
 }
@@ -561,7 +680,7 @@ async function aiWrite(btn){
 function fillSettings(){
   $('#st-staff').value=settings.staffName;$('#st-phone').value=settings.waPhone;$('#st-cta').value=settings.waCta;
   $('#st-text').value=settings.waText;$('#st-tags').value=settings.hashtags;$('#st-remind').checked=!!settings.remind;
-  $('#st-ai-url').value=settings.aiUrl||'https://dawn-shadow-826c.empayars12.workers.dev';$('#st-ai-key').value=settings.aiKey||'';
+  $('#st-ai-url').value=settings.aiUrl||'';$('#st-ai-key').value=settings.aiKey||'';
 }
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('#btn-install').classList.remove('hidden')});
@@ -620,6 +739,15 @@ document.addEventListener('click',async e=>{
    case 'gen':gen(0);ai.seed=ai.seed;break;
    case 'regen':gen(1);break;
    case 'aiwrite':aiWrite(b);break;
+   case 'gencta':genCta();break;
+   case 'gensmart':genSmart();break;
+   case 'smartcopy':toast(await copyText(smartList[+b.dataset.i].text)?'📋 Disalin':'Gagal salin');break;
+   case 'smartfav':{smartList[+b.dataset.i].keys.forEach(k=>{FAV[k]=(FAV[k]||0)+1});SV('esk_learn',FAV);b.textContent='❤️ Disukai';learnInfo();toast('AI akan lebih kerap guna bahagian ayat ini');break}
+   case 'smartsched':{const S=SERVICES.find(x=>x.id===ai.service),P=PROBLEMS[ai.problem];openSheet({title:`${$('#ai-prod').value.trim()||S.label}: ${P.l}`,caption:smartList[+b.dataset.i].text,image:ai.img});break}
+   case 'resetlearn':if(confirm('Padam semua pembelajaran AI?')){FAV={};SV('esk_learn',FAV);learnInfo();toast('Pembelajaran dipadam')}break;
+   case 'ctacopy':toast(await copyText(ctaList[+b.dataset.i])?'📋 Disalin':'Gagal salin');break;
+   case 'ctawa':toast(await copyText(ctaList[+b.dataset.i]+'\n'+waBlock().split('\n').slice(1).join('\n'))?'📋 Disalin dengan link WhatsApp':'Gagal salin');break;
+   case 'ctaall':toast(await copyText(ctaList.join('\n\n'))?'📋 Semua ayat disalin':'Gagal salin');break;
    case 'ocopy':{const el=$('#'+b.dataset.t);toast(await copyText(el.value)?'📋 Disalin':'Gagal salin');break}
    case 'oshare':shareText($('#'+b.dataset.t).value,ai.img);break;
    case 'tosched':{const S=SERVICES.find(x=>x.id===ai.service),P=PROBLEMS[ai.problem];
@@ -629,8 +757,8 @@ document.addEventListener('click',async e=>{
       settings={...settings,staffName:$('#st-staff').value.trim(),waPhone:ph,waCta:$('#st-cta').value.trim(),waText:$('#st-text').value.trim(),hashtags:$('#st-tags').value.trim(),aiUrl:$('#st-ai-url').value.trim(),aiKey:$('#st-ai-key').value.trim()};
       SV('esk_settings',settings);toast('✅ Tetapan disimpan');break}
    case 'install':if(deferredInstall){deferredInstall.prompt();deferredInstall=null;b.classList.add('hidden')}break;
-   case 'export':{const blob=new Blob([JSON.stringify({v:1,settings,checklist,posts},null,1)],{type:'application/json'});const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download=`esk-kreatif-${todayStr()}.json`;l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);break}
-   case 'reset':if(confirm('Padam SEMUA post dan tetapan dalam handphone ini?')){['esk_settings','esk_checklist','esk_posts','esk_fired','esk_check_date'].forEach(k=>localStorage.removeItem(k));location.reload()}break;
+   case 'export':{const blob=new Blob([JSON.stringify({v:1,settings,checklist,posts,learn:FAV},null,1)],{type:'application/json'});const u=URL.createObjectURL(blob);const l=document.createElement('a');l.href=u;l.download=`esk-kreatif-${todayStr()}.json`;l.click();setTimeout(()=>URL.revokeObjectURL(u),2000);break}
+   case 'reset':if(confirm('Padam SEMUA post dan tetapan dalam handphone ini?')){['esk_settings','esk_checklist','esk_posts','esk_fired','esk_check_date','esk_learn'].forEach(k=>localStorage.removeItem(k));location.reload()}break;
   }
 });
 $('#ps-cap').addEventListener('input',capCount);
@@ -643,7 +771,7 @@ $('#ps-file').addEventListener('change',async e=>{const f=e.target.files[0];if(!
 $('#imp-file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
   try{const d=JSON.parse(await f.text());if(!Array.isArray(d.posts))throw 0;
     if(!confirm(`Import ${d.posts.length} post? Data semasa akan diganti.`))return;
-    posts=d.posts;settings={...DEF_SET,...(d.settings||{})};checklist=d.checklist||DEF_CHECK;
+    posts=d.posts;FAV=d.learn||{};SV('esk_learn',FAV);settings={...DEF_SET,...(d.settings||{})};checklist=d.checklist||DEF_CHECK;
     SV('esk_posts',posts);SV('esk_settings',settings);SV('esk_checklist',checklist);fillSettings();toast('✅ Import berjaya')}catch(x){toast('Fail sandaran tidak sah')}});
 $('#st-remind').addEventListener('change',async e=>{
   settings.remind=e.target.checked;SV('esk_settings',settings);
